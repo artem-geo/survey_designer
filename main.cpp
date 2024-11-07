@@ -54,6 +54,12 @@ public:
     {
         return (x == rhs.x) && (y == rhs.y);
     }
+
+    friend std::ostream& operator << (std::ostream& os, const Point& point)
+    {
+        os << "(" << point.x << ", " << point.y << ")";
+        return os;
+    } 
 };
 
 class Line
@@ -63,6 +69,11 @@ public:
     Line() = default;
     Line(Point p1, Point p2)
         : caps(p1, p2) {}
+    friend std::ostream& operator << (std::ostream& os, const Line& line)
+    {
+        os << "[" << line.caps.first << ", " << line.caps.second << "]";
+        return os;
+    }
 
 };
 
@@ -72,20 +83,22 @@ public:
 //     std::vector<Point> stations;
 // };
 
-struct Rectangle
+class Rectangle
 {   
+public:
     std::vector<Line> sides;
+    std::vector<Line> lines;
 
     Rectangle() = default;
-    Rectangle(double xArray[], double yArray[], int nPoints)
-{
+    void initRectangle(double xArray[], double yArray[], int nVertices)
+    {
         Point bottomLeft{};
         Point topLeft{};
         Point topRight{};
         Point bottomRight{};
         double xMin{-1}, yMin{-1}, xMax{-1}, yMax{-1};
 
-        for (size_t i{0}; i < nPoints; ++i) 
+        for (size_t i{0}; i < (nVertices-1); ++i) // nVertices = nVertices(actual) + 1
         {
             if (i == 0)
             {
@@ -107,10 +120,27 @@ struct Rectangle
         sides.push_back(Line(topRight, bottomRight));
         sides.push_back(Line(bottomRight, bottomLeft));
     }
+
+    void printRectangle()
+    {
+        for (size_t i{0}; i < sides.size(); i++)
+        {
+            std::cout << "Line " << i << ": " << sides.at(i) << "\n";
+        }
+    }
+
+    void initLines(double alpha, double dx)
+    {
+        std::cout << alpha << " " << dx << "\n";
+    }
+
 };
 
 int main()
 {
+    double alpha = 0;
+    double dx = 50;
+
     auto inHandle = SHPOpen(R"(C:\Dev\survey_designer\examples\polygon)", "rb");
     
     ShpInfo shpInfo;
@@ -129,6 +159,10 @@ int main()
     }
     
     auto polygon = SHPReadObject(inHandle, 0);
+
+    Rectangle rectangle;
+    rectangle.initRectangle(polygon->padfX, polygon->padfY, polygon->nVertices);
+    rectangle.initLines(alpha, dx);
 
     SHPDestroyObject(polygon);
     SHPClose(inHandle);
