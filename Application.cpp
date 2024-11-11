@@ -165,7 +165,7 @@ public:
     {
         Point pointBegin, pointEnd;
         double angleRad = convertDegreesToRadians(angleGrad);
-        if (angleRad == 0)
+        if (angleGrad == 0)
         {
             pointBegin = corners.bottomLeft;
             pointEnd = corners.bottomRight;
@@ -176,7 +176,7 @@ public:
                 pointEnd.y += dL;
             } while (pointBegin.y <= corners.topLeft.y);
         }
-        else if (angleRad == 90)
+        else if (angleGrad == 90)
         {
             pointBegin = corners.bottomLeft;
             pointEnd = corners.topLeft;
@@ -187,7 +187,7 @@ public:
                 pointEnd.x += dL;
             } while (pointBegin.x <= corners.bottomRight.x);
         }
-        if (angleRad < 90 || angleRad > 90)
+        else if (angleGrad < 90)
         {
             // central point of a line
             Point pointCentral = corners.bottomRight;
@@ -196,10 +196,8 @@ public:
             double xDeltaCaps = corners.bottomRight.x - corners.bottomLeft.x;
             double yDeltaCaps = xDeltaCaps * std::tan(angleRad);
 
-            std::cout << xDeltaCaps << " " << yDeltaCaps << std::endl;
-
             // angle between the rectangle's diagonal and the bottom edge
-            double betaRad = std::atan((corners.topLeft.y - corners.bottomLeft.y) / (xDeltaCaps));
+            double betaRad = std::atan((corners.topRight.y - corners.bottomRight.y) / (xDeltaCaps));
             // step of central point along the diagonal
             double deltaDiagonal = dL / std::sin(angleRad + betaRad);
 
@@ -208,32 +206,49 @@ public:
             double yDeltaCentral = deltaDiagonal * std::cos(betaRad);
 
             // push line and update central point until central point is within the rectangle
-            if (angleGrad < 90)
+            while ((pointCentral.x > corners.bottomLeft.x) && (pointCentral.y < corners.topLeft.y))
             {
-                while ((pointCentral.x > corners.bottomLeft.x) && (pointCentral.y < corners.topLeft.y))
-                {
-                    lines.push_back(Line(Point(pointCentral.x - xDeltaCaps, pointCentral.y - yDeltaCaps), 
-                                        Point(pointCentral.x + xDeltaCaps, pointCentral.y + yDeltaCaps)));
-                    pointCentral.x -= xDeltaCentral;
-                    pointCentral.y += yDeltaCentral;
-                }
-            } else if (angleGrad > 90)
+                lines.push_back(Line(Point(pointCentral.x - xDeltaCaps, pointCentral.y - yDeltaCaps), 
+                                    Point(pointCentral.x + xDeltaCaps, pointCentral.y + yDeltaCaps)));
+                pointCentral.x -= xDeltaCentral;
+                pointCentral.y += yDeltaCentral;
+            }            
+        }
+        else if (angleGrad > 90)
+        {
+            angleRad = std::numbers::pi - angleRad;
+
+            // central point of a line
+            Point pointCentral = corners.bottomLeft;
+            
+            // delta x and y to calculate line caps from the central point
+            double xDeltaCaps = corners.bottomRight.x - corners.bottomLeft.x;
+            double yDeltaCaps = xDeltaCaps * std::tan(angleRad);
+
+            // angle between the rectangle's diagonal and the bottom edge
+            double betaRad = std::atan((corners.topRight.y - corners.bottomRight.y) / (xDeltaCaps));
+            // step of central point along the diagonal
+            double deltaDiagonal = dL / std::sin(angleRad + betaRad);
+
+            // delta x and y to calculate new coord-s of the central point
+            double xDeltaCentral = deltaDiagonal * std::sin(betaRad);
+            double yDeltaCentral = deltaDiagonal * std::cos(betaRad);
+
+            // push line and update central point until central point is within the rectangle
+            while ((pointCentral.x < corners.bottomRight.x) && (pointCentral.y < corners.topRight.y))
             {
-                while ((pointCentral.x < corners.bottomRight.x) && (pointCentral.y < corners.topRight.y))
-                {
-                    lines.push_back(Line(Point(pointCentral.x - xDeltaCaps, pointCentral.y + yDeltaCaps), 
-                                        Point(pointCentral.x + xDeltaCaps, pointCentral.y - yDeltaCaps)));
-                    pointCentral.x += xDeltaCentral;
-                    pointCentral.y -= yDeltaCentral;
-                }
-            }  
+                lines.push_back(Line(Point(pointCentral.x + xDeltaCaps, pointCentral.y - yDeltaCaps), 
+                                    Point(pointCentral.x - xDeltaCaps, pointCentral.y + yDeltaCaps)));
+                pointCentral.x += xDeltaCentral;
+                pointCentral.y += yDeltaCentral;
+            }   
         }
     }
 };
 
 int main()
 {
-    double azimuthGrad = 80;
+    double azimuthGrad = 280;
     double dL = 100.0;
     double angleGrad = convertAzimuthToAngle(azimuthGrad);
 
@@ -259,26 +274,6 @@ int main()
     Rectangle rectangle;
     rectangle.initRectangle(polygon->padfX, polygon->padfY, polygon->nVertices);
     rectangle.initLines(angleGrad, dL);
-    std::cout << rectangle.lines.size() << std::endl;
-
-    std::ofstream outFile("test.csv", std::ios::trunc);
-    if (outFile.is_open())
-    {
-        outFile << "X,Y\n";
-        for (auto line : rectangle.lines)
-        {
-            outFile << line.caps.first.x << "," << line.caps.first.y << "\n";
-        }
-        for (auto line : rectangle.lines)
-        {
-            outFile << line.caps.second.x << "," << line.caps.second.y << "\n";
-        }
-    }
-    else
-    {
-        std::cerr << "File is not opened" << std::endl;
-    }
-    outFile.close();
 
     SHPDestroyObject(polygon);
     SHPClose(inHandle);
