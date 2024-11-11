@@ -3,14 +3,17 @@ project(SurveyDesigner)
 
 set (CMAKE_CXX_STANDARD 20)
 
-include_directories(libs)
-add_subdirectory(libs)
-
+add_subdirectory(libs/shapelib)
+add_subdirectory(src)
 link_directories(
-  "${PROJECT_SOURCE_DIR}/libs"
+  "${PROJECT_SOURCE_DIR}/libs/shapelib"
 )
+file(GLOB SOURCES "src/*.cpp")
+add_executable(survey_designer "Application.cpp"
+                                ${SOURCES})
+                                include_directories("libs/shapelib"
+                    "include")
 
-add_executable(survey_designer "Application.cpp")
 
 target_link_libraries(survey_designer
                         libshp
