@@ -1,0 +1,11 @@
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/CMakeFiles/shp.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/CMakeFiles/edit_cache.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/CMakeFiles/rebuild_cache.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/CMakeFiles/list_install_components.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/CMakeFiles/install.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/CMakeFiles/install/local.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/cmake/CMakeFiles/edit_cache.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/cmake/CMakeFiles/rebuild_cache.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/cmake/CMakeFiles/list_install_components.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/cmake/CMakeFiles/install.dir
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/blds/shapelib/x64-windows-rel/cmake/CMakeFiles/install/local.dir

@@ -1,0 +1,8 @@
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/pkgs/shapelib_x64-windows/share/shapelib/shapelib-targets.cmake
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/pkgs/shapelib_x64-windows/share/shapelib/shapelib-targets-release.cmake
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/pkgs/shapelib_x64-windows/lib/shp.lib
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/pkgs/shapelib_x64-windows/bin/shp.dll
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/pkgs/shapelib_x64-windows/include/shapefil.h
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/pkgs/shapelib_x64-windows/lib/pkgconfig/shapelib.pc
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/pkgs/shapelib_x64-windows/share/shapelib/shapelib-config.cmake
+C:/Dev/survey_designer/vcpkg_installed/x64-windows/vcpkg/pkgs/shapelib_x64-windows/share/shapelib/shapelib-config-version.cmake

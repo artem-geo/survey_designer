@@ -1,7 +1,6 @@
-*
+.git
+.vs
+.gitignore
 build
 !build/*.exe
 !build/*.dll
-!examples
-!include
-!src

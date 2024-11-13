@@ -1,0 +1,9 @@
+# ninja log v6
+10	136	7531900997767724	CMakeFiles/shp.dir/dbfopen.c.obj	583fd10e9166a0cc
+16	141	7531900997923964	CMakeFiles/shp.dir/shptree.c.obj	37f05386ff8aaffe
+19	157	7531900997923964	CMakeFiles/shp.dir/sbnsearch.c.obj	355b2e7fe6185bef
+13	182	7531900997923964	CMakeFiles/shp.dir/safileio.c.obj	7a7fb6916bf6cf79
+7	196	7531900997767724	CMakeFiles/shp.dir/shpopen.c.obj	2e88144f55f427a1
+196	290	7531901000425285	dll/shp.dll	7d50bf60ca72bd5d
+196	290	7531901000425285	dll/shp.lib	7d50bf60ca72bd5d
+291	323	7531901000581531	CMakeFiles/install.util	cb61525a5b06409d
