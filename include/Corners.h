@@ -6,10 +6,10 @@
 
 struct Corners
 {
-    Point bottomLeft;
-    Point topLeft;
-    Point topRight;
-    Point bottomRight;
+    Point bottom_left;
+    Point top_left;
+    Point top_right;
+    Point bottom_right;
 
     Corners() = default;
     ~Corners() = default;

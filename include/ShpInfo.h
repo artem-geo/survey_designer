@@ -4,10 +4,10 @@
 class ShpInfo
 {
 public:
-    int numEntities {-1};
-    int shpType {-1};
-    double padfMinBound[4];
-    double padfMaxBound[4];
+    int n_entities {-1};
+    int shp_type {-1};
+    double padf_min_bound[4];
+    double padf_max_bound[4];
     ShpInfo() = default;
     void printInfo();
 };

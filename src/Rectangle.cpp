@@ -3,38 +3,39 @@
 #include "Utils.h"
 #include <cmath>
 #include <iostream>
+#include <numbers>
    
-void Rectangle::initRectangle(double xArray[], double yArray[], int nVertices)
+void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices)
 {
-    Point bottomLeft{};
-    Point topLeft{};
-    Point topRight{};
-    Point bottomRight{};
-    double xMin{-1}, yMin{-1}, xMax{-1}, yMax{-1};
+    Point bottom_left{};
+    Point top_left{};
+    Point top_right{};
+    Point bottom_right{};
+    double x_min{-1}, y_min{-1}, x_max{-1}, y_max{-1};
 
-    for (size_t i{0}; i < (nVertices-1); ++i) // nVertices = nVertices(actual) + 1
+    for (size_t i{0}; i < (n_vertices-1); ++i) // nVertices = nVertices(actual) + 1
     {
         if (i == 0)
         {
-            xMin = xMax = xArray[i];
-            yMin = yMax = yArray[i];
+            x_min = x_max = x_array[i];
+            y_min = y_max = y_array[i];
             continue;
         }
-        xMin = (xMin > xArray[i]) ? xArray[i] : xMin;
-        xMax = (xMax < xArray[i]) ? xArray[i] : xMax;
-        yMin = (yMin > yArray[i]) ? yArray[i] : yMin;
-        yMax = (yMax < yArray[i]) ? yArray[i] : yMax;
+        x_min = (x_min > x_array[i]) ? x_array[i] : x_min;
+        x_max = (x_max < x_array[i]) ? x_array[i] : x_max;
+        y_min = (y_min > y_array[i]) ? y_array[i] : y_min;
+        y_max = (y_max < y_array[i]) ? y_array[i] : y_max;
     }
 
-    corners.bottomLeft  = {xMin, yMin};
-    corners.topLeft = {xMin, yMax};
-    corners.topRight = {xMax, yMax};
-    corners.bottomRight = {xMax, yMin};
+    corners.bottom_left  = {x_min, y_min};
+    corners.top_left = {x_min, y_max};
+    corners.top_right = {x_max, y_max};
+    corners.bottom_right = {x_max, y_min};
 
-    sides.push_back(Line(corners.bottomLeft, corners.topLeft));
-    sides.push_back(Line(corners.topLeft, corners.topRight));
-    sides.push_back(Line(corners.topRight, corners.bottomRight));
-    sides.push_back(Line(corners.bottomRight, corners.bottomLeft));
+    sides.push_back(Line(corners.bottom_left, corners.top_left));
+    sides.push_back(Line(corners.top_left, corners.top_right));
+    sides.push_back(Line(corners.top_right, corners.bottom_right));
+    sides.push_back(Line(corners.bottom_right, corners.bottom_left));
 }
 
 void Rectangle::printRectangle()
@@ -45,86 +46,86 @@ void Rectangle::printRectangle()
     }
 }
 
-void Rectangle::initLines(double angleGrad, double dL)
+void Rectangle::initLines(double angle_grad, double dL)
 {
-    Point pointBegin, pointEnd;
-    double angleRad = utils::convertDegreesToRadians(angleGrad);
-    if (angleGrad == 0)
+    Point point_begin, point_end;
+    double angle_rad = utils::convertDegreesToRadians(angle_grad);
+    if (angle_grad == 0)
     {
-        pointBegin = corners.bottomLeft;
-        pointEnd = corners.bottomRight;
+        point_begin = corners.bottom_left;
+        point_end = corners.bottom_right;
         do
         {
-            lines.push_back(Line(pointBegin, pointEnd));
-            pointBegin.y += dL;
-            pointEnd.y += dL;
-        } while (pointBegin.y <= corners.topLeft.y);
+            lines.push_back(Line(point_begin, point_end));
+            point_begin.y += dL;
+            point_end.y += dL;
+        } while (point_begin.y <= corners.top_left.y);
     }
-    else if (angleGrad == 90)
+    else if (angle_grad == 90)
     {
-        pointBegin = corners.bottomLeft;
-        pointEnd = corners.topLeft;
+        point_begin = corners.bottom_left;
+        point_end = corners.top_left;
         do
         {
-            lines.push_back(Line(pointBegin, pointEnd));
-            pointBegin.x += dL;
-            pointEnd.x += dL;
-        } while (pointBegin.x <= corners.bottomRight.x);
+            lines.push_back(Line(point_begin, point_end));
+            point_begin.x += dL;
+            point_end.x += dL;
+        } while (point_begin.x <= corners.bottom_right.x);
     }
-    else if (angleGrad < 90)
+    else if (angle_grad < 90)
     {
         // central point of a line
-        Point pointCentral = corners.bottomRight;
+        Point point_central = corners.bottom_right;
         
         // delta x and y to calculate line caps from the central point
-        double xDeltaCaps = corners.bottomRight.x - corners.bottomLeft.x;
-        double yDeltaCaps = xDeltaCaps * std::tan(angleRad);
+        double x_delta_caps = corners.bottom_right.x - corners.bottom_left.x;
+        double y_delta_caps = x_delta_caps * std::tan(angle_rad);
 
         // angle between the rectangle's diagonal and the bottom edge
-        double betaRad = std::atan((corners.topRight.y - corners.bottomRight.y) / (xDeltaCaps));
+        double beta_rad = std::atan((corners.top_right.y - corners.bottom_right.y) / (x_delta_caps));
         // step of central point along the diagonal
-        double deltaDiagonal = dL / std::sin(angleRad + betaRad);
+        double delta_diagonal = dL / std::sin(angle_rad + beta_rad);
 
         // delta x and y to calculate new coord-s of the central point
-        double xDeltaCentral = deltaDiagonal * std::sin(betaRad);
-        double yDeltaCentral = deltaDiagonal * std::cos(betaRad);
+        double x_delta_central = delta_diagonal * std::sin(beta_rad);
+        double y_delta_central = delta_diagonal * std::cos(beta_rad);
 
         // push line and update central point until central point is within the rectangle
-        while ((pointCentral.x > corners.bottomLeft.x) && (pointCentral.y < corners.topLeft.y))
+        while ((point_central.x > corners.bottom_left.x) && (point_central.y < corners.top_left.y))
         {
-            lines.push_back(Line(Point(pointCentral.x - xDeltaCaps, pointCentral.y - yDeltaCaps), 
-                                Point(pointCentral.x + xDeltaCaps, pointCentral.y + yDeltaCaps)));
-            pointCentral.x -= xDeltaCentral;
-            pointCentral.y += yDeltaCentral;
+            lines.push_back(Line(Point(point_central.x - x_delta_caps, point_central.y - y_delta_caps), 
+                                Point(point_central.x + x_delta_caps, point_central.y + y_delta_caps)));
+            point_central.x -= x_delta_central;
+            point_central.y += y_delta_central;
         }            
     }
-    else if (angleGrad > 90)
+    else if (angle_grad > 90)
     {
-        angleRad = std::numbers::pi - angleRad;
+        angle_rad = std::numbers::pi - angle_rad;
 
         // central point of a line
-        Point pointCentral = corners.bottomLeft;
+        Point point_central = corners.bottom_left;
         
         // delta x and y to calculate line caps from the central point
-        double xDeltaCaps = corners.bottomRight.x - corners.bottomLeft.x;
-        double yDeltaCaps = xDeltaCaps * std::tan(angleRad);
+        double x_delta_caps = corners.bottom_right.x - corners.bottom_left.x;
+        double y_delta_caps = x_delta_caps * std::tan(angle_rad);
 
         // angle between the rectangle's diagonal and the bottom edge
-        double betaRad = std::atan((corners.topRight.y - corners.bottomRight.y) / (xDeltaCaps));
+        double beta_rad = std::atan((corners.top_right.y - corners.bottom_right.y) / (x_delta_caps));
         // step of central point along the diagonal
-        double deltaDiagonal = dL / std::sin(angleRad + betaRad);
+        double delta_diagonal = dL / std::sin(angle_rad + beta_rad);
 
         // delta x and y to calculate new coord-s of the central point
-        double xDeltaCentral = deltaDiagonal * std::sin(betaRad);
-        double yDeltaCentral = deltaDiagonal * std::cos(betaRad);
+        double x_delta_central = delta_diagonal * std::sin(beta_rad);
+        double y_delta_central = delta_diagonal * std::cos(beta_rad);
 
         // push line and update central point until central point is within the rectangle
-        while ((pointCentral.x < corners.bottomRight.x) && (pointCentral.y < corners.topRight.y))
+        while ((point_central.x < corners.bottom_right.x) && (point_central.y < corners.top_right.y))
         {
-            lines.push_back(Line(Point(pointCentral.x + xDeltaCaps, pointCentral.y - yDeltaCaps), 
-                                Point(pointCentral.x - xDeltaCaps, pointCentral.y + yDeltaCaps)));
-            pointCentral.x += xDeltaCentral;
-            pointCentral.y += yDeltaCentral;
+            lines.push_back(Line(Point(point_central.x + x_delta_caps, point_central.y - y_delta_caps), 
+                                Point(point_central.x - x_delta_caps, point_central.y + y_delta_caps)));
+            point_central.x += x_delta_central;
+            point_central.y += y_delta_central;
         }   
     }
 }

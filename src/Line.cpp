@@ -42,8 +42,8 @@ std::pair<double, double> Line::getSegmentIntersectionParameters(const Line& lin
 bool Line::checkSegmentsIntersection(const Line& line1, const Line& line2)
 {
     auto [t, u] = getSegmentIntersectionParameters(line1, line2);
-    bool checkIntersect = ((0 <= t) && (t <= 1)) && ((0 <= u) && (u <= 1));
-    return checkIntersect;
+    bool check_intersect = ((0 <= t) && (t <= 1)) && ((0 <= u) && (u <= 1));
+    return check_intersect;
 }
     
 /**
@@ -57,9 +57,9 @@ Point Line::getIntersection(const Line& line1, const Line& line2)
     auto [t, u] = getSegmentIntersectionParameters(line1, line2);
     if (checkSegmentsIntersection(line1, line2))
     {
-        double xIntersection = line1.caps.first.x + t * (line1.caps.second.x - line1.caps.first.x);
-        double yIntersection = line1.caps.first.y + t * (line1.caps.second.y - line1.caps.first.y);
-        return Point(xIntersection, yIntersection);            
+        double x_intersection = line1.caps.first.x + t * (line1.caps.second.x - line1.caps.first.x);
+        double y_intersection = line1.caps.first.y + t * (line1.caps.second.y - line1.caps.first.y);
+        return Point(x_intersection, y_intersection);            
     }
     return Point(-999, -999); // return dummy point if no intersection is detected
 }
