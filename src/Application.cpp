@@ -1,7 +1,7 @@
 #include "Rectangle.h"
-#include "shapefil.h"
 #include "ShpInfo.h"
 #include "Utils.h"
+#include <shapefil.h>
 #include <iostream>
 
 int main()
@@ -9,7 +9,6 @@ int main()
     double azimuth_grad = 280;
     double dL = 100.0;
     double angle_grad = utils::convertAzimuthToAngle(azimuth_grad);
-    std::cout << angle_grad << std::endl;
 
     auto handle_in = SHPOpen(R"(C:\Dev\survey_designer\examples\polygon2)", "rb");
     
