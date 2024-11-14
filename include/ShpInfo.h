@@ -1,5 +1,4 @@
-#ifndef SHPINFO_H
-#define SHPINFO_H
+#pragma once
 
 class ShpInfo
 {
@@ -11,6 +10,3 @@ public:
     ShpInfo() = default;
     void printInfo();
 };
-
-
-#endif

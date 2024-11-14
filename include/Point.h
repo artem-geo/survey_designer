@@ -1,5 +1,4 @@
-#ifndef POINT_H
-#define POINT_H
+#pragma once
 
 #include <fstream>
 
@@ -10,9 +9,9 @@ public:
     double y;
     Point(double x, double y);
     Point();
-    bool operator == (const Point& rhs);
-    friend std::ostream& operator << (std::ostream& os, const Point& point);
+    friend bool operator== (const Point& lhs, const Point& rhs);
+    bool operator< (const Point& rhs);
+    bool operator> (const Point& rhs);
+    friend std::ostream& operator<< (std::ostream& os, const Point& point);
+    friend double distance(const Point& point1, const Point& point2);
 };
-
-
-#endif

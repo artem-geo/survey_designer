@@ -15,5 +15,5 @@ double utils::convertAzimuthToAngle(double azimuth)
 
 double utils::convertDegreesToRadians(double angle)
 {
-    return angle * std::numbers::pi / 180;
+    return angle * std::numbers::pi / 180.0;
 }

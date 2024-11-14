@@ -1,5 +1,4 @@
-#ifndef CORNERS_H
-#define CORNERS_H
+#pragma once
 
 #include "Point.h"
 
@@ -14,6 +13,3 @@ struct Corners
     Corners() = default;
     ~Corners() = default;
 };
-
-
-#endif

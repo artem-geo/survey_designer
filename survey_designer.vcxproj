@@ -173,6 +173,7 @@
     <ClCompile Include="src\Point.cpp" />
     <ClCompile Include="src\Rectangle.cpp" />
     <ClCompile Include="src\ShpInfo.cpp" />
+    <ClCompile Include="src\SurveyScheme.cpp" />
     <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +182,7 @@
     <ClInclude Include="include\Point.h" />
     <ClInclude Include="include\Rectangle.h" />
     <ClInclude Include="include\ShpInfo.h" />
+    <ClInclude Include="include\SurveyScheme.h" />
     <ClInclude Include="include\Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

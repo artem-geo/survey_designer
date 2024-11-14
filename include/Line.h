@@ -1,5 +1,4 @@
-#ifndef LINE_H
-#define LINE_H
+#pragma once
 
 #include "Point.h"
 #include <fstream>
@@ -15,5 +14,3 @@ public:
     static bool checkSegmentsIntersection(const Line& line1, const Line& line2);
     static Point getIntersection(const Line& line1, const Line& line2);
 };
-
-#endif

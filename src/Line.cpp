@@ -1,4 +1,5 @@
 #include "Line.h"
+#include "Utils.h"
 
 Line::Line(Point p1, Point p2)
         : caps(p1, p2) {}
@@ -55,11 +56,11 @@ bool Line::checkSegmentsIntersection(const Line& line1, const Line& line2)
 Point Line::getIntersection(const Line& line1, const Line& line2)
 {
     auto [t, u] = getSegmentIntersectionParameters(line1, line2);
-    if (checkSegmentsIntersection(line1, line2))
+    if (checkSegmentsIntersection(line1, line2)) 
     {
         double x_intersection = line1.caps.first.x + t * (line1.caps.second.x - line1.caps.first.x);
         double y_intersection = line1.caps.first.y + t * (line1.caps.second.y - line1.caps.first.y);
         return Point(x_intersection, y_intersection);            
     }
-    return Point(-999, -999); // return dummy point if no intersection is detected
+    return utils::POINT_DUMMY; // return dummy point if no intersection is detected
 }

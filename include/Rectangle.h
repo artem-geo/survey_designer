@@ -1,6 +1,4 @@
-#ifndef RECTANGLE_H
-#define RECTANGLE_H
-
+#pragma once
 
 #include "Corners.h"
 #include "Line.h"
@@ -13,10 +11,7 @@ public:
     std::vector<Line> sides;
     std::vector<Line> lines;
     
-void initRectangle(double xArray[], double yArray[], int nVertices);
-void printRectangle();
-void initLines(double angleGrad, double dL);
+    void initRectangle(double x_array[], double y_array[], int n_vertices);
+    void printRectangle();
+    void initLines(double angle_grad, double dL);
 };
-
-
-#endif
