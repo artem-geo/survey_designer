@@ -33,6 +33,12 @@ std::ostream& operator << (std::ostream& os, const Point& point)
     return os;
 }
 
+/**
+ * @brief Calculates the Euclidean distance between two points
+ * @param point1 first instance of the Point class
+ * @param point2 second instance of the Point class
+ * @return double value of the distance between the points
+ */
 double distance(const Point& point1, const Point& point2)
 {
     return std::sqrt(std::pow((point2.x - point1.x), 2) + std::pow((point2.y - point1.x), 2));

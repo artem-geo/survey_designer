@@ -1,6 +1,9 @@
 #include "ShpInfo.h"
 #include <iostream>
 
+/**
+ * @brief Prints attributes of the ShpInfo object (info from the SHP-file header)
+ */
 void ShpInfo::printInfo()
 {
     std::cout << "Number of entities: " << n_entities << "\n";

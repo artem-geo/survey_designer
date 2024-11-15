@@ -7,39 +7,36 @@
 SurveyScheme::SurveyScheme(const char* file_path)
     : rectangle(Rectangle()), angle_grad(-1), angle_rad(-1)
 {
-    try 
-    {
-        auto handle_poly = SHPOpen(file_path, "rb");
-        ShpInfo shp_info;
-        SHPGetInfo(handle_poly, &(shp_info.n_entities), &(shp_info.shp_type), shp_info.padf_min_bound, shp_info.padf_max_bound);
+    auto handle_poly = SHPOpen(file_path, "rb");
+    ShpInfo shp_info;
+    SHPGetInfo(handle_poly, &(shp_info.n_entities), &(shp_info.shp_type), shp_info.padf_min_bound, shp_info.padf_max_bound);
 
-        // check the opened SHP: type == 5 (Polygon) and only one polygon
-        if (shp_info.shp_type != 5)
-            throw std::ios::failure("Please, provide a Polygon SHP file");
-        if (shp_info.n_entities != 1)
-            throw std::ios::failure("Please, provide a SHP file with ONE polygon");
+    // check the opened SHP: type == 5 (Polygon) and only one polygon
+    if (shp_info.shp_type != 5)
+        throw std::ios::failure("Please, provide a Polygon SHP file");
+    if (shp_info.n_entities != 1)
+        throw std::ios::failure("Please, provide a SHP file with ONE polygon");
 
-        auto polygon = SHPReadObject(handle_poly, 0);
-        rectangle.initRectangle(polygon->padfX, polygon->padfY, polygon->nVertices);
+    auto polygon = SHPReadObject(handle_poly, 0);
+    rectangle.initRectangle(polygon->padfX, polygon->padfY, polygon->nVertices);
         
-        for (size_t i{0}; i < ((polygon->nVertices) -1); ++i) 
-        {
-            Point point1{polygon->padfX[i], polygon->padfY[i]};
-            Point point2{polygon->padfX[i + 1], polygon->padfY[i + 1]};
-            points_poly.push_back(point1);
-            lines_poly.push_back(Line{point1, point2});
-        }
-
-        SHPDestroyObject(polygon);
-        SHPClose(handle_poly);
-    } 
-    catch (const std::exception& e) 
+    for (size_t i{0}; i < ((polygon->nVertices) - 1); ++i) // nVertices - 1 as the first and the last vertices are equal
     {
-        std::cerr << e.what() << std::endl;
+        Point point1{polygon->padfX[i], polygon->padfY[i]};
+        Point point2{polygon->padfX[i + 1], polygon->padfY[i + 1]};
+        // get polygon nodes and edges
+        points_poly.push_back(point1);
+        lines_poly.push_back(Line{point1, point2});
     }
-    
+    SHPDestroyObject(polygon);
+    SHPClose(handle_poly);
 }
 
+/**
+ * @brief Initialises survey lines
+ * @param azimuth_grad survey lines angle relative to the east CCW
+ * @param dL line spacing
+ */
 void SurveyScheme::initSurveyLines(double azimuth_grad, double dL)
 {
     angle_grad = utils::convertAzimuthToAngle(azimuth_grad);
@@ -72,6 +69,10 @@ void SurveyScheme::initSurveyLines(double azimuth_grad, double dL)
     }
 }
 
+/**
+ * @brief Initialises survey points
+ * @param ds Survey points separation
+ */
 void SurveyScheme::initSurveyPoints(double ds)
 {
     for (auto [line_name, line] : lines_survey)
@@ -81,9 +82,15 @@ void SurveyScheme::initSurveyPoints(double ds)
     }
 }
 
+/**
+ * @brief Construct survey points along a survey line
+ * @param line line that should be used for the construction
+ * @param ds survey point separation
+ * @return vector of points along the line
+ */
 std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds)
 {
-    Point point = line.caps.first;
+    Point point = line.caps.first; // first point coincides with the beginning of the line
     std::vector<Point> points;
     if (angle_grad == 0) 
     {

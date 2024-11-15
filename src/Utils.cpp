@@ -2,6 +2,11 @@
 #include <cmath>
 #include <numbers>
 
+/**
+ * @brief Converts azimuth deg to angle deg
+ * @param azimuth azimuth angle [0, 360] deg
+ * @return [0, 180) deg where 0 deg - East, 90 deg - North
+ */
 double utils::convertAzimuthToAngle(double azimuth)
 {
     if (azimuth >= 0 && azimuth <= 90)
@@ -13,6 +18,11 @@ double utils::convertAzimuthToAngle(double azimuth)
     return azimuth;
 }
 
+/**
+ * @brief converts angle in degree to angle in radians
+ * @param angle angle (degree)
+ * @return angle (radians)
+ */
 double utils::convertDegreesToRadians(double angle)
 {
     return angle * std::numbers::pi / 180.0;

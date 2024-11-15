@@ -4,7 +4,13 @@
 #include <cmath>
 #include <iostream>
 #include <numbers>
-   
+
+/**
+ * @brief Initialise a rectangle object, i.e. sets its corners (Point) and creates its edges (Line)
+ * @param x_array array of doubles containing x coordinates of the polygon nodes
+ * @param y_array array of doubles containing y coordinates of the polygon nodes
+ * @param n_vertices number of vertices of the polygon = actual number + 1 (the first node == the last node)
+ */
 void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices)
 {
     Point bottom_left{};
@@ -15,7 +21,7 @@ void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices
 
     for (size_t i{0}; i < (n_vertices-1); ++i) // nVertices = nVertices(actual) + 1
     { 
-        if (i == 0) 
+        if (i == 0) // init first pair of coordinates
         {
             x_min = x_max = x_array[i];
             y_min = y_max = y_array[i];
@@ -38,6 +44,9 @@ void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices
     sides.push_back(Line(corners.bottom_right, corners.bottom_left));
 }
 
+/**
+ * @brief Prints caps of the rectangle' edges
+ */
 void Rectangle::printRectangle()
 {
     for (size_t i{0}; i < sides.size(); i++) 
@@ -46,6 +55,11 @@ void Rectangle::printRectangle()
     }
 }
 
+/**
+ * @brief Initialises lines filling in the rectangle
+ * @param angle_grad Orientation angle of the lines in degrees
+ * @param dL 
+ */
 void Rectangle::initLines(double angle_grad, double dL)
 {
     Point point_begin, point_end;
@@ -72,7 +86,9 @@ void Rectangle::initLines(double angle_grad, double dL)
             point_end.x += dL;
         } while (point_begin.x <= corners.bottom_right.x);
     }
-    else if (angle_grad < 90 && angle_grad > 0) 
+    // if angle is in the first or the second quadrants calculations are conducted
+    // relative to the central point
+    else if (angle_grad < 90 && angle_grad > 0)
     {
         // central point of a line
         Point point_central = corners.bottom_right;

@@ -11,7 +11,9 @@ std::ostream& operator << (std::ostream& os, const Line& line)
 }
 
 /**
- * @brief calculates intesection parameters t and u from the intersection formulae (see https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection)
+ * @brief Calculates intesection parameters t and u from the intersection formulae (see https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection)
+ * @param line1 first instance of the Line class
+ * @param line2 second instance of the Line class
  * @return pair of doubles where pair.first = t and pair.second = u
  */
 std::pair<double, double> Line::getSegmentIntersectionParameters(const Line& line1, const Line& line2)
@@ -35,10 +37,10 @@ std::pair<double, double> Line::getSegmentIntersectionParameters(const Line& lin
 }
     
 /**
- * @brief checks whether two lines intersect
+ * @brief Checks whether two lines intersect
  * @param t first intersection parameter
  * @param u second intersectino parameter
- * @return true if 0 <= t <= 1 and 0 <= u <= 1
+ * @return boolean value: true if 0 <= t <= 1 and 0 <= u <= 1
  */
 bool Line::checkSegmentsIntersection(const Line& line1, const Line& line2)
 {
@@ -48,10 +50,10 @@ bool Line::checkSegmentsIntersection(const Line& line1, const Line& line2)
 }
     
 /**
- * @brief calculates line intersection
- * @param line1 line object
- * @param line2 line object
- * @return line1 and line2 intersection point; {-999, -999} - if points do not intersect
+ * @brief Calculates line intersection
+ * @param line1 first instance of the Line class
+ * @param line2 second instance of the Line class
+ * @return Point class instance - line intersection; {-999, -999} - if points do not intersect
  */
 Point Line::getIntersection(const Line& line1, const Line& line2)
 {
