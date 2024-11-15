@@ -13,25 +13,27 @@ int main()
     double dL = 200;
     double ds = 50.0;
     double angle_grad = utils::convertAzimuthToAngle(azimuth_grad);
-    const char* file_path = R"(C:\Dev\survey_designer\examples\polygon2.shp)";
+    const char* file_path_in = R"(C:\Dev\survey_designer\examples\input\polygon)";
+    const char* file_path_out = R"(C:\Dev\survey_designer\examples\output\lines)";
 
-    SurveyScheme survey_scheme{file_path};
+    SurveyScheme survey_scheme{file_path_in};
     survey_scheme.initSurveyLines(azimuth_grad, dL);
     survey_scheme.initSurveyPoints(ds);
+    survey_scheme.saveLinesToShp(file_path_out);
     
-    std::ofstream ofile("./survey_points_315.csv");
-    ofile << "X,Y\n";
-   for (auto [line_name, points] : survey_scheme.points_survey) 
-   {
-        for (const Point& point : points)
-        {
-            ofile << std::setprecision(3) << std::fixed;
-            ofile << point.x << "," << point.y << "\n";
-        }
-   }
+   // std::ofstream ofile("./survey_points_315.csv");
+   // ofile << "X,Y\n";
+   //for (auto [line_name, points] : survey_scheme.points_survey) 
+   //{
+   //     for (const Point& point : points)
+   //     {
+   //         ofile << std::setprecision(3) << std::fixed;
+   //         ofile << point.x << "," << point.y << "\n";
+   //     }
+   //}
 
-    std::cout << survey_scheme.lines_survey.size() << std::endl;
-    std::cout << survey_scheme.rectangle.lines.size() << std::endl;
+   // std::cout << survey_scheme.lines_survey.size() << std::endl;
+   // std::cout << survey_scheme.rectangle.lines.size() << std::endl;
 
     //for (auto [line_name, line] : survey_scheme.lines_survey)
     //{
@@ -47,7 +49,7 @@ int main()
     //    ofile << line.caps.second.x << "," << line.caps.second.y << "\n";
     //}
 
-    ofile.close();
+    //ofile.close();
 
     // std::cin.get();
 }

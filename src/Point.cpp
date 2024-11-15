@@ -41,5 +41,5 @@ std::ostream& operator << (std::ostream& os, const Point& point)
  */
 double distance(const Point& point1, const Point& point2)
 {
-    return std::sqrt(std::pow((point2.x - point1.x), 2) + std::pow((point2.y - point1.x), 2));
+    return std::hypot(point1.x - point2.x, point1.y - point2.y);
 }

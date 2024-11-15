@@ -21,4 +21,6 @@ public:
 	void initSurveyLines(double azimuth_grad, double dL);
 	void initSurveyPoints(double ds);
 	std::vector<Point> planPointsAlongLine(const Line& line, double ds);
+	void saveLinesToShp(const char* file_path);
+	//void savePointToShp(const char* file_path);
 };

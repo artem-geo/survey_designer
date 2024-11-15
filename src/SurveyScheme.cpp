@@ -1,3 +1,4 @@
+#include "Point.h"
 #include "shapefil.h"
 #include "ShpInfo.h"
 #include "SurveyScheme.h"
@@ -7,9 +8,9 @@
 SurveyScheme::SurveyScheme(const char* file_path)
     : rectangle(Rectangle()), angle_grad(-1), angle_rad(-1)
 {
-    auto handle_poly = SHPOpen(file_path, "rb");
+    auto handle_in = SHPOpen(file_path, "rb");
     ShpInfo shp_info;
-    SHPGetInfo(handle_poly, &(shp_info.n_entities), &(shp_info.shp_type), shp_info.padf_min_bound, shp_info.padf_max_bound);
+    SHPGetInfo(handle_in, &(shp_info.n_entities), &(shp_info.shp_type), shp_info.padf_min_bound, shp_info.padf_max_bound);
 
     // check the opened SHP: type == 5 (Polygon) and only one polygon
     if (shp_info.shp_type != 5)
@@ -17,7 +18,7 @@ SurveyScheme::SurveyScheme(const char* file_path)
     if (shp_info.n_entities != 1)
         throw std::ios::failure("Please, provide a SHP file with ONE polygon");
 
-    auto polygon = SHPReadObject(handle_poly, 0);
+    auto polygon = SHPReadObject(handle_in, 0);
     rectangle.initRectangle(polygon->padfX, polygon->padfY, polygon->nVertices);
         
     for (size_t i{0}; i < ((polygon->nVertices) - 1); ++i) // nVertices - 1 as the first and the last vertices are equal
@@ -29,7 +30,7 @@ SurveyScheme::SurveyScheme(const char* file_path)
         lines_poly.push_back(Line{point1, point2});
     }
     SHPDestroyObject(polygon);
-    SHPClose(handle_poly);
+    SHPClose(handle_in);
 }
 
 /**
@@ -128,4 +129,46 @@ std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds
         } while (point.y < line.caps.second.y);
     }
     return points;
+}
+
+/**
+ * @brief Saves constructed survey lines into SHP, SHX and DBF files
+ * @param file path C-string
+ */
+void SurveyScheme::saveLinesToShp(const char* file_path)
+{
+    if (lines_survey.size() == 0)
+    {
+        std::cerr << "No lines constructed. Construct the lines at first" << std::endl;
+        throw std::exception();
+    }
+    auto handle_out_shp = SHPCreate(file_path, SHPT_ARC);
+    auto handle_out_dbf = DBFCreate(file_path);
+    int ifield_id = DBFAddField(handle_out_dbf, "ID", FTString, 10, 0);
+    int ifield_x1 = DBFAddField(handle_out_dbf, "X1", FTDouble, 10, 3);
+    int ifield_y1 = DBFAddField(handle_out_dbf, "Y1", FTDouble, 10, 3);
+    int ifield_x2 = DBFAddField(handle_out_dbf, "X2", FTDouble, 10, 3);
+    int ifield_y2 = DBFAddField(handle_out_dbf, "Y2", FTDouble, 10, 3);
+    int ifield_len = DBFAddField(handle_out_dbf, "LEN", FTDouble, 10, 3);
+    
+    for (auto [line_name, line] : lines_survey)
+    {
+
+        const double padf_x[] = {line.caps.first.x, line.caps.second.x};
+        const double padf_y[] = {line.caps.first.y, line.caps.second.y}; 
+        const double padf_z[] = {0.0, 0.0}; 
+        auto line_obj = SHPCreateSimpleObject(SHPT_ARC, 2, padf_x, padf_y, padf_z);
+        int ishape = SHPWriteObject(handle_out_shp, -1, line_obj);
+
+        DBFWriteStringAttribute(handle_out_dbf, ishape, ifield_id, line_name.c_str());
+        DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_x1, line.caps.first.x);
+        DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_y1, line.caps.first.y);
+        DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_x2, line.caps.second.x);
+        DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_y2, line.caps.second.x);
+        DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_len, distance(line.caps.first, line.caps.second));
+        
+        SHPDestroyObject(line_obj);
+    }
+    SHPClose(handle_out_shp);
+    DBFClose(handle_out_dbf);
 }
