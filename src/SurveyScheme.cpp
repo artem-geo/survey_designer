@@ -6,7 +6,7 @@
 #include <iostream>
 
 SurveyScheme::SurveyScheme(const char* file_path)
-    : rectangle(Rectangle()), angle_grad(-1), angle_rad(-1)
+    : rectangle(Rectangle()), angle_grad(-1), angle_rad(-1), dL(-1), ds(-1)
 {
     auto handle_in = SHPOpen(file_path, "rb");
     ShpInfo shp_info;
@@ -38,8 +38,9 @@ SurveyScheme::SurveyScheme(const char* file_path)
  * @param azimuth_grad survey lines angle relative to the east CCW
  * @param dL line spacing
  */
-void SurveyScheme::initSurveyLines(double azimuth_grad, double dL)
+void SurveyScheme::initSurveyLines(double azimuth_grad, double line_spacing)
 {
+    dL = line_spacing;
     angle_grad = utils::convertAzimuthToAngle(azimuth_grad);
     angle_rad = utils::convertDegreesToRadians(angle_grad);
     rectangle.initLines(angle_grad, dL);
@@ -74,8 +75,9 @@ void SurveyScheme::initSurveyLines(double azimuth_grad, double dL)
  * @brief Initialises survey points
  * @param ds Survey points separation
  */
-void SurveyScheme::initSurveyPoints(double ds)
+void SurveyScheme::initSurveyPoints(double station_spacing)
 {
+    ds = station_spacing;
     for (auto [line_name, line] : lines_survey)
     {
         std::vector<Point> stations = planPointsAlongLine(line, ds);
@@ -144,7 +146,7 @@ void SurveyScheme::saveLinesToShp(const char* file_path)
     }
     auto handle_out_shp = SHPCreate(file_path, SHPT_ARC);
     auto handle_out_dbf = DBFCreate(file_path);
-    int ifield_id = DBFAddField(handle_out_dbf, "ID", FTString, 10, 0);
+    int ifield_lid = DBFAddField(handle_out_dbf, "LINEID", FTString, 10, 0);
     int ifield_x1 = DBFAddField(handle_out_dbf, "X1", FTDouble, 10, 3);
     int ifield_y1 = DBFAddField(handle_out_dbf, "Y1", FTDouble, 10, 3);
     int ifield_x2 = DBFAddField(handle_out_dbf, "X2", FTDouble, 10, 3);
@@ -160,7 +162,7 @@ void SurveyScheme::saveLinesToShp(const char* file_path)
         auto line_obj = SHPCreateSimpleObject(SHPT_ARC, 2, padf_x, padf_y, padf_z);
         int ishape = SHPWriteObject(handle_out_shp, -1, line_obj);
 
-        DBFWriteStringAttribute(handle_out_dbf, ishape, ifield_id, line_name.c_str());
+        DBFWriteStringAttribute(handle_out_dbf, ishape, ifield_lid, line_name.c_str());
         DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_x1, line.caps.first.x);
         DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_y1, line.caps.first.y);
         DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_x2, line.caps.second.x);
@@ -168,6 +170,49 @@ void SurveyScheme::saveLinesToShp(const char* file_path)
         DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_len, distance(line.caps.first, line.caps.second));
         
         SHPDestroyObject(line_obj);
+    }
+    SHPClose(handle_out_shp);
+    DBFClose(handle_out_dbf);
+}
+
+/**
+ * @brief Saves stations to the SHP file
+ * @param file_path C-string file path
+ */
+void SurveyScheme::savePointsToShp(const char* file_path)
+{
+    if (points_survey.size() == 0)
+    {
+        std::cerr << "No points constructed. Construct the points at first" << std::endl;
+        throw std::exception();
+    }
+    auto handle_out_shp = SHPCreate(file_path, SHPT_POINT);
+    auto handle_out_dbf = DBFCreate(file_path);
+    int ifield_lid = DBFAddField(handle_out_dbf, "LINEID", FTString, 10, 0);
+    int ifield_sid = DBFAddField(handle_out_dbf, "STID", FTString, 10, 0);
+    int ifield_x = DBFAddField(handle_out_dbf, "X", FTDouble, 10, 3);
+    int ifield_y = DBFAddField(handle_out_dbf, "Y", FTDouble, 10, 3);
+
+    for (auto [line_name, points] : points_survey)
+    {
+        int point_id{0};
+        ;
+        for (const Point& point : points)
+        {
+            const double padf_x[] = {point.x, };
+            const double padf_y[] = {point.y, };
+            const double padf_z[] = {0.0, };
+
+            auto point_obj = SHPCreateSimpleObject(SHPT_POINT, 1, padf_x, padf_y, padf_z);
+            int ishape = SHPWriteObject(handle_out_shp, -1, point_obj);
+            
+            DBFWriteStringAttribute(handle_out_dbf, ishape, ifield_lid, line_name.c_str());
+            DBFWriteStringAttribute(handle_out_dbf, ishape, ifield_sid, std::to_string(point_id).c_str());
+            DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_x, point.x);
+            DBFWriteDoubleAttribute(handle_out_dbf, ishape, ifield_y, point.y);
+            SHPDestroyObject(point_obj);
+            point_id += ds;
+        }
     }
     SHPClose(handle_out_shp);
     DBFClose(handle_out_dbf);
