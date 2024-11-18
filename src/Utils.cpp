@@ -1,6 +1,9 @@
 #include "Utils.h"
 #include <cmath>
+#include <string>
+#include <iostream>
 #include <numbers>
+#include <vector>
 
 /**
  * @brief Converts azimuth deg to angle deg
@@ -26,4 +29,115 @@ double utils::convertAzimuthToAngle(double azimuth)
 double utils::convertDegreesToRadians(double angle)
 {
     return angle * std::numbers::pi / 180.0;
+}
+
+/**
+ * @brief Parses input parameters = number of arguments and C string array
+ * @param argc number of parameters
+ * @param argv C string array including various parameters
+ * @return SurveyParams object containing information about the survey and necessary parameters
+ */
+utils::SurveyParams utils::parseInputParams(int argc, char* argv[])
+{
+    using namespace utils;
+    SurveyParams params;
+
+    if (argc != 8)
+        throw std::runtime_error("Wrong number of arguments");
+
+    std::vector<std::string> argvs{argv, argv + argc};
+
+    params.type = parseSurveyTypeParam(argvs[1]);
+    params.object_to_save = parseObjectToSaveParam(argvs[2]);
+    if (params.type == SurveyType::LINEAR)
+    {
+        params.line_spacing = parseLineSpacingParam(argvs[3]);
+        params.azimuth_grad = parseAzimuthGradParam(argvs[4]);
+    }    
+    else if (params.type == SurveyType::HEXAGONAL)
+    {
+        params.line_spacing = 0;
+        params.azimuth_grad = 0;
+    }
+    return params;
+}
+
+utils::SurveyType utils::parseSurveyTypeParam(std::string& survey_type_param)
+{
+    if ((survey_type_param.length() != 2) ||
+        survey_type_param[0] != '-')
+        throw std::runtime_error("Wrong survey type parameter. Try again");
+
+    switch (survey_type_param[1])
+    {
+    case 'c':
+        return SurveyType::LINEAR; break;
+    case 'h':
+        return SurveyType::HEXAGONAL; break;
+    default:
+        throw std::runtime_error("Wrong survey type parameter. Try again");
+    }
+}
+
+utils::ObjectToSave utils::parseObjectToSaveParam(std::string& survey_type_param)
+{
+    if ((survey_type_param.length() != 2) ||
+        survey_type_param[0] != '-')
+        throw std::runtime_error("Wrong object to save parameter. Try again");
+
+    switch (survey_type_param[1])
+    {
+    case 'l':
+        return ObjectToSave::LINE; break;
+    case 'p':
+        return ObjectToSave::POINT; break;    
+    case 'b':
+        return ObjectToSave::ALL; break;
+    default:
+        throw std::runtime_error("Wrong object to save parameter. Try again");
+    }
+}
+
+double utils::parseLineSpacingParam(std::string& line_spacing_param)
+{
+    if (line_spacing_param.substr(0, 4) != "-dl=")
+        throw std::runtime_error("Wrong line spacing parameter. Try again");
+    
+    size_t digit_length = line_spacing_param.length() - 4;
+    double line_spacing{0.0};
+    try
+    {
+        line_spacing = std::stod(line_spacing_param.substr(4, digit_length));
+    }
+    catch (...)
+    {
+        throw std::invalid_argument("Wrong line spacing argument. Try again");
+    }
+    
+    if (line_spacing < 0)
+        throw std::runtime_error("Invalid line spacing. Try again");
+
+    return line_spacing;
+}
+
+double utils::parseAzimuthGradParam(std::string& line_azimuth_param)
+{
+    if ((line_azimuth_param.substr(0, 3) != "-a="))
+        throw std::runtime_error("Wrong azimuth parameter. Try again");
+
+    size_t digit_length = line_azimuth_param.length() - 3;
+    double azimuth_grad{0.0};
+    try
+    {
+        azimuth_grad = std::stod(line_azimuth_param.substr(3, digit_length));
+    }
+    catch (...)
+    {
+        throw std::invalid_argument("Wrong azimuth parameter. Try again");
+    }
+
+    if (azimuth_grad < 0)
+        throw std::runtime_error("Invalid azimuth. Try again");
+
+    return azimuth_grad;
 }
