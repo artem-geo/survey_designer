@@ -43,29 +43,39 @@ int main(int argc, char* argv[])
     try
     {
         utils::SurveyParams survey_params = utils::parseInputParams(argc, argv);
-        std::cout << static_cast<int>(survey_params.type) << std::endl;
-        std::cout << static_cast<int>(survey_params.object_to_save) << std::endl;
-        std::cout << survey_params.line_spacing << std::endl;
-        std::cout << survey_params.azimuth_grad << std::endl;
+        SurveyScheme survey_scheme{survey_params.path_polygon.c_str()};
+        switch (survey_params.type)
+        {
+        case utils::SurveyType::LINEAR:
+            survey_scheme.initSurveyLines(survey_params.azimuth_grad,
+                survey_params.line_spacing);
+            survey_scheme.initSurveyPoints(survey_params.station_spacing);
+            break;
+        default:
+            throw std::runtime_error("Wrong survey type. Try again");
+            break;
+        }
+
+        switch (survey_params.object_to_save)
+        {
+        case utils::ObjectToSave::LINE: 
+            survey_scheme.saveLinesToShp(survey_params.path_output.c_str());
+            break;
+        case utils::ObjectToSave::POINT:
+            survey_scheme.savePointsToShp(survey_params.path_output.c_str());
+            break;
+        case utils::ObjectToSave::ALL:
+            survey_scheme.saveLinesToShp(survey_params.path_output.c_str());
+            survey_scheme.savePointsToShp(survey_params.path_output.c_str());
+            break;
+        default:
+            throw std::runtime_error("Wrong object to save. Try again");
+            break;
+        }
     }
     catch (const std::exception& e)
     {
         std::cerr << e.what();
         std::exit(1);
-    }
-
-    //double azimuth_grad = 315;
-    //double dL = 200;
-    //double ds = 50.0;
-    //double angle_grad = utils::convertAzimuthToAngle(azimuth_grad);
-    //const char* file_path_in = R"(C:\Dev\survey_designer\examples\input\polygon)";
-    //const char* file_path_out_lines = R"(C:\Dev\survey_designer\examples\output\lines)";
-    //const char* file_path_out_points = R"(C:\Dev\survey_designer\examples\output\points)";
-
-    //SurveyScheme survey_scheme{file_path_in};
-    //survey_scheme.initSurveyLines(azimuth_grad, dL);
-    //survey_scheme.initSurveyPoints(ds);
-    //survey_scheme.saveLinesToShp(file_path_out_lines);
-    //survey_scheme.savePointsToShp(file_path_out_points);
-    
+    }    
 }

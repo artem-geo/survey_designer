@@ -59,6 +59,9 @@ utils::SurveyParams utils::parseInputParams(int argc, char* argv[])
         params.line_spacing = 0;
         params.azimuth_grad = 0;
     }
+    params.station_spacing = parseStationSpacingParam(argvs[5]);
+    params.path_polygon = argvs[6];
+    params.path_output = argvs[7];
     return params;
 }
 
@@ -114,7 +117,7 @@ double utils::parseLineSpacingParam(std::string& line_spacing_param)
         throw std::invalid_argument("Wrong line spacing argument. Try again");
     }
     
-    if (line_spacing < 0)
+    if (line_spacing <= 0)
         throw std::runtime_error("Invalid line spacing. Try again");
 
     return line_spacing;
@@ -140,4 +143,26 @@ double utils::parseAzimuthGradParam(std::string& line_azimuth_param)
         throw std::runtime_error("Invalid azimuth. Try again");
 
     return azimuth_grad;
+}
+
+double utils::parseStationSpacingParam(std::string& station_spacing_param)
+{
+    if (station_spacing_param.substr(0, 4) != "-ds=")
+        throw std::runtime_error("Wrong station spacing parameter. Try again");
+
+    size_t digit_length = station_spacing_param.length() - 4;
+    double station_spacing{0.0};
+    try
+    {
+        station_spacing = std::stod(station_spacing_param.substr(4, digit_length));
+    }
+    catch (...)
+    {
+        throw std::invalid_argument("Wrong station spacing argument. Try again");
+    }
+
+    if (station_spacing <= 0)
+        throw std::runtime_error("Invalid station spacing. Try again");
+
+    return station_spacing;
 }
