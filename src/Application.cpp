@@ -56,18 +56,18 @@ Example:
 
 int main(int argc, char* argv[])
 {
-    ////int argc = 8;
-    //int argc = 5;
+    //int argc = 8;
+    ////int argc = 5;
     //char name[] = "survey_designer.exe";
-    //char p1[] = "-h";
+    //char p1[] = "-c";
     //char p2[] = "-b";
-    //char p3[] = "-dl=100";
-    //char p4[] = "-a=45";
+    //char p3[] = "-dl=300";
+    //char p4[] = "-a=315";
     //char p5[] = "-ds=100";
-    //char p6[] = R"(C:\Dev\survey_designer\examples\input\polygon)";
-    //char p7[] = R"(C:\Dev\survey_designer\examples\output\)";
-    ////char* argv[] = {name, p1, p2, p3, p4, p5, p6, p7};
-    //char* argv[] = {name, p1, p5, p6, p7};
+    //char p6[] = R"(../examples/input/polygon)";
+    //char p7[] = R"(../examples/output/)";
+    //char* argv[] = {name, p1, p2, p3, p4, p5, p6, p7};
+    ////char* argv[] = {name, p1, p5, p6, p7};
     
     try
     {
