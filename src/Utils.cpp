@@ -39,29 +39,34 @@ double utils::convertDegreesToRadians(double angle)
  */
 utils::SurveyParams utils::parseInputParams(int argc, char* argv[])
 {
+    if ((argc != 8) && (argc != 5)) throw std::runtime_error("Wrong number of arguments");
+
     using namespace utils;
     SurveyParams params;
-
-    if (argc != 8)
-        throw std::runtime_error("Wrong number of arguments");
 
     std::vector<std::string> argvs{argv, argv + argc};
 
     params.type = parseSurveyTypeParam(argvs[1]);
-    params.object_to_save = parseObjectToSaveParam(argvs[2]);
+    
     if (params.type == SurveyType::LINEAR)
     {
+        params.object_to_save = parseObjectToSaveParam(argvs[2]);
         params.line_spacing = parseLineSpacingParam(argvs[3]);
         params.azimuth_grad = parseAzimuthGradParam(argvs[4]);
-    }    
-    else if (params.type == SurveyType::HEXAGONAL)
-    {
-        params.line_spacing = 0;
-        params.azimuth_grad = 0;
+        params.station_spacing = parseStationSpacingParam(argvs[5]);
+        params.path_polygon = argvs[6];
+        params.path_output = argvs[7];
     }
-    params.station_spacing = parseStationSpacingParam(argvs[5]);
-    params.path_polygon = argvs[6];
-    params.path_output = argvs[7];
+
+    if (params.type == SurveyType::HEXAGONAL)
+    {
+        params.station_spacing = parseStationSpacingParam(argvs[2]);
+        params.object_to_save = ObjectToSave::POINT;
+        params.line_spacing = -1;
+        params.azimuth_grad = -1;
+        params.path_polygon = argvs[3];
+        params.path_output = argvs[4];
+    }
     return params;
 }
 

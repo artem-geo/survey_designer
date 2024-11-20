@@ -8,25 +8,41 @@ Parameter 1. Survey type
     -c = conventional survey
     -h = hexagonal survey
 
-Parameter 2. Objects to save
-    -l = save lines only
-    -p = save points only
-    -b = save lines and points
 
-Parameter 3. Line spacing
-    -dl = line spacing | if parameter 1 = -h any value will be overwritten
 
-Parameter 4. Line azimuth
-    -a = azimuth in degrees (CW). Negative values are not allowed. if parameter 1 = -h any value will be overwritten
+If Parameter 1 == -c:
 
-Parameter 5. Station spacing
-    -ds = station spacing
+    Parameter 2. Objects to save
+        -l = save lines only
+        -p = save points only
+        -b = save lines and points
 
-Parameter 6. 
-    -fp = polygon file path excluding file extenstion, ie. polygon, not polygon.shp
+    Parameter 3. Line spacing
+        -dl = line spacing | if parameter 1 = -h any value will be overwritten
 
-Parameter 7.
-    -fs = output file path excluding file extenstion, ie. scheme, not scheme.shp
+    Parameter 4. Line azimuth
+        -a = azimuth in degrees (CW). Negative values are not allowed. if parameter 1 = -h any value will be overwritten
+
+    Parameter 5. Station spacing
+        -ds = station spacing
+
+    Parameter 6. 
+        -fp = polygon file path excluding file extenstion, ie. polygon, not polygon.shp
+
+    Parameter 7.
+        -fs = output file path excluding file extenstion, ie. scheme, not scheme.shp
+
+If Parameter 1 == -h:
+    
+    Parameter 2. Station spacing
+        -dl= station spacing
+
+    Parameter 3.
+        -fp = polygon file path excluding file extenstion, ie. polygon, not polygon.shp
+
+    Parameter 4.
+        -fs = output file path excluding file extenstion, ie. scheme, not scheme.shp
+
 
 Example:
     surveyplanner.exe -c -b -dl=50 -a=45 -ds=10 C:\Users\User\Desktop\tempfile C:\Users\User\Desktop\output
@@ -40,6 +56,19 @@ Example:
 
 int main(int argc, char* argv[])
 {
+    ////int argc = 8;
+    //int argc = 5;
+    //char name[] = "survey_designer.exe";
+    //char p1[] = "-h";
+    //char p2[] = "-b";
+    //char p3[] = "-dl=100";
+    //char p4[] = "-a=45";
+    //char p5[] = "-ds=100";
+    //char p6[] = R"(C:\Dev\survey_designer\examples\input\polygon)";
+    //char p7[] = R"(C:\Dev\survey_designer\examples\output\)";
+    ////char* argv[] = {name, p1, p2, p3, p4, p5, p6, p7};
+    //char* argv[] = {name, p1, p5, p6, p7};
+    
     try
     {
         utils::SurveyParams survey_params = utils::parseInputParams(argc, argv);
@@ -47,9 +76,11 @@ int main(int argc, char* argv[])
         switch (survey_params.type)
         {
         case utils::SurveyType::LINEAR:
-            survey_scheme.initSurveyLines(survey_params.azimuth_grad,
-                survey_params.line_spacing);
-            survey_scheme.initSurveyPoints(survey_params.station_spacing);
+            survey_scheme.initSurveyLines(survey_params.azimuth_grad, survey_params.line_spacing);
+            survey_scheme.initSurveyLinearPoints(survey_params.station_spacing);
+            break;
+        case utils::SurveyType::HEXAGONAL:
+            survey_scheme.initSurveyHexPoints(survey_params.station_spacing);
             break;
         default:
             throw std::runtime_error("Wrong survey type. Try again");
@@ -62,11 +93,11 @@ int main(int argc, char* argv[])
             survey_scheme.saveLinesToShp(survey_params.path_output.c_str());
             break;
         case utils::ObjectToSave::POINT:
-            survey_scheme.savePointsToShp(survey_params.path_output.c_str());
+            survey_scheme.savePointsToShp(survey_params.path_output.c_str(), survey_params.type);
             break;
         case utils::ObjectToSave::ALL:
             survey_scheme.saveLinesToShp(survey_params.path_output.c_str());
-            survey_scheme.savePointsToShp(survey_params.path_output.c_str());
+            survey_scheme.savePointsToShp(survey_params.path_output.c_str(), survey_params.type);
             break;
         default:
             throw std::runtime_error("Wrong object to save. Try again");
