@@ -16,14 +16,18 @@ bool operator== (const Point& lhs, const Point& rhs)
 bool Point::operator< (const Point& rhs)
 {
     if (y == rhs.y)
+    {
         return x < rhs.x;
+    }
     return y < rhs.y;
 }
 
 bool Point::operator> (const Point& rhs)
 {
     if (y == rhs.y)
+    {
         return x > rhs.x;
+    }
     return y > rhs.y;
 }
 

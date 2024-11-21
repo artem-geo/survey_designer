@@ -73,7 +73,8 @@ void Rectangle::initLines(double angle_grad, double dL)
             lines.push_back(Line(point_begin, point_end));
             point_begin.y += dL;
             point_end.y += dL;
-        } while (point_begin.y <= corners.top_left.y);
+        } 
+        while (point_begin.y <= corners.top_left.y);
     }
     else if (angle_grad == 90) 
     {
@@ -84,7 +85,8 @@ void Rectangle::initLines(double angle_grad, double dL)
             lines.push_back(Line(point_begin, point_end));
             point_begin.x += dL;
             point_end.x += dL;
-        } while (point_begin.x <= corners.bottom_right.x);
+        } 
+        while (point_begin.x <= corners.bottom_right.x);
     }
     // if angle is in the first or the second quadrants calculations are conducted
     // relative to the central point
@@ -107,8 +109,7 @@ void Rectangle::initLines(double angle_grad, double dL)
         double y_delta_central = delta_diagonal * std::cos(beta_rad);
 
         // push line and update central point until central point is within the rectangle
-        while ((point_central.x > corners.bottom_left.x) 
-            || (point_central.y < corners.top_left.y)) 
+        while ((point_central.x > corners.bottom_left.x) || (point_central.y < corners.top_left.y)) 
         {
             lines.push_back(Line(Point(point_central.x - x_delta_caps, point_central.y - y_delta_caps), 
                                 Point(point_central.x + x_delta_caps, point_central.y + y_delta_caps)));
@@ -137,8 +138,7 @@ void Rectangle::initLines(double angle_grad, double dL)
         double y_delta_central = delta_diagonal * std::cos(beta_rad);
 
         // push line and update central point until central point is within the rectangle
-        while ((point_central.x < corners.bottom_right.x) 
-            || (point_central.y < corners.top_right.y)) 
+        while ((point_central.x < corners.bottom_right.x) || (point_central.y < corners.top_right.y)) 
         {
             lines.push_back(Line(Point(point_central.x + x_delta_caps, point_central.y - y_delta_caps), 
                                 Point(point_central.x - x_delta_caps, point_central.y + y_delta_caps)));

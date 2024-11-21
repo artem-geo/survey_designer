@@ -73,35 +73,36 @@ int main(int argc, char* argv[])
     {
         utils::SurveyParams survey_params = utils::parseInputParams(argc, argv);
         SurveyScheme survey_scheme{survey_params.path_polygon.c_str()};
+
         switch (survey_params.type)
         {
-        case utils::SurveyType::LINEAR:
-            survey_scheme.initSurveyLines(survey_params.azimuth_grad, survey_params.line_spacing);
-            survey_scheme.initSurveyLinearPoints(survey_params.station_spacing);
-            break;
-        case utils::SurveyType::HEXAGONAL:
-            survey_scheme.initSurveyHexPoints(survey_params.station_spacing);
-            break;
-        default:
-            throw std::runtime_error("Wrong survey type. Try again");
-            break;
+            case utils::SurveyType::LINEAR:
+                survey_scheme.initSurveyLines(survey_params.azimuth_grad, survey_params.line_spacing);
+                survey_scheme.initSurveyLinearPoints(survey_params.station_spacing);
+                break;
+            case utils::SurveyType::HEXAGONAL:
+                survey_scheme.initSurveyHexPoints(survey_params.station_spacing);
+                break;
+            default:
+                throw std::runtime_error("Wrong survey type. Try again");
+                break;
         }
 
         switch (survey_params.object_to_save)
         {
-        case utils::ObjectToSave::LINE: 
-            survey_scheme.saveLinesToShp(survey_params.path_output.c_str());
-            break;
-        case utils::ObjectToSave::POINT:
-            survey_scheme.savePointsToShp(survey_params.path_output.c_str(), survey_params.type);
-            break;
-        case utils::ObjectToSave::ALL:
-            survey_scheme.saveLinesToShp(survey_params.path_output.c_str());
-            survey_scheme.savePointsToShp(survey_params.path_output.c_str(), survey_params.type);
-            break;
-        default:
-            throw std::runtime_error("Wrong object to save. Try again");
-            break;
+            case utils::ObjectToSave::LINE: 
+                survey_scheme.saveLinesToShp(survey_params.path_output.c_str());
+                break;
+            case utils::ObjectToSave::POINT:
+                survey_scheme.savePointsToShp(survey_params.path_output.c_str(), survey_params.type);
+                break;
+            case utils::ObjectToSave::ALL:
+                survey_scheme.saveLinesToShp(survey_params.path_output.c_str());
+                survey_scheme.savePointsToShp(survey_params.path_output.c_str(), survey_params.type);
+                break;
+            default:
+                throw std::runtime_error("Wrong object to save. Try again");
+                break;
         }
     }
     catch (const std::exception& e)

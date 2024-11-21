@@ -15,9 +15,14 @@ SurveyScheme::SurveyScheme(const char* file_path)
 
     // check the opened SHP: type == 5 (Polygon) and only one polygon
     if (shp_info.shp_type != 5)
+    {
         throw std::ios::failure("Please, provide a Polygon SHP file");
+    }
+
     if (shp_info.n_entities != 1)
+    {
         throw std::ios::failure("Please, provide a SHP file with ONE polygon");
+    }
 
     auto polygon = SHPReadObject(handle_in, 0);
     rectangle.initRectangle(polygon->padfX, polygon->padfY, polygon->nVertices);
@@ -54,10 +59,11 @@ void SurveyScheme::initSurveyLines(double azimuth_grad, double line_spacing)
         {
             Point intersection = Line::getIntersection(line_poly, line_rect);
             if (intersection != utils::POINT_DUMMY)
+            {
                 intersections.push_back(intersection);
+            }
         }
-        if ((intersections.size() > 1) 
-            && (intersections[0] != intersections[intersections.size() - 1])) 
+        if ((intersections.size() > 1) && (intersections[0] != intersections[intersections.size() - 1])) 
         {
             std::sort(intersections.begin(), intersections.end());
             int line_sub_id = 0;
@@ -114,7 +120,8 @@ void SurveyScheme::initSurveyHexPoints(double station_spacing)
 
         points_odd.push_back(point_odd);
         point_odd.x += station_spacing;
-    } while (point_odd.x < rectangle.corners.bottom_right.x);
+    } 
+    while (point_odd.x < rectangle.corners.bottom_right.x);
 
     int row_number{0}; // numbering starts at 0
     do 
@@ -132,12 +139,14 @@ void SurveyScheme::initSurveyHexPoints(double station_spacing)
                 [&dy] (Point& p) {p.y += (2 * dy); });
         }
         ++row_number;
-    } while ((rectangle.points_hex.end() - 1)->y < rectangle.corners.top_left.y);
+    } 
+    while ((rectangle.points_hex.end() - 1)->y < rectangle.corners.top_left.y);
 
     int point_id{1};
     for (const Point& point : rectangle.points_hex)
     {
-        if (checkPointInPolygon(point)) {
+        if (checkPointInPolygon(point)) 
+        {
             points_hex_survey.push_back({std::to_string(point_id++), point});
         }
     }
@@ -160,7 +169,8 @@ std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds
         {
             points.push_back(point);
             point.x += ds;
-        } while (point < line.caps.second);
+        } 
+        while (point < line.caps.second);
     }
     else if (angle_grad == 90)
     {
@@ -168,7 +178,8 @@ std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds
         {
             points.push_back(point);
             point.y += ds;
-        } while (point < line.caps.second);
+        } 
+        while (point < line.caps.second);
     }
     else if (angle_grad < 90 && angle_grad > 0)
     {
@@ -177,7 +188,8 @@ std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds
             points.push_back(point);
             point.x += ds * std::cos(angle_rad);
             point.y += ds * std::sin(angle_rad);
-        } while (point < line.caps.second);
+        } 
+        while (point < line.caps.second);
     }
     else if (angle_grad > 90 && angle_grad < 180)
     {
@@ -187,7 +199,8 @@ std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds
             points.push_back(point);
             point.x -= ds * std::cos(beta_rad);
             point.y += ds * std::sin(beta_rad);
-        } while (point.y < line.caps.second.y);
+        } 
+        while (point.y < line.caps.second.y);
     }
     return points;
 }
@@ -203,7 +216,12 @@ bool SurveyScheme::checkPointInPolygon(const Point& point)
     Line ray{point, ray_cap_right}; // init ray starting at the point and running to the right 
     int number_intersections{0};
     for (const Line& line : lines_poly) // loop counting number of intersections
-        if (Line::checkSegmentsIntersection(ray, line)) number_intersections++;
+    {
+        if (Line::checkSegmentsIntersection(ray, line))
+        {
+            number_intersections++;
+        }
+    }
     // even intersections = point outside; odd = inside
     return (number_intersections % 2 == 0) ? false : true;
 }
@@ -291,7 +309,7 @@ void SurveyScheme::savePointsToShp(const char* file_path, utils::SurveyType surv
         for (auto [line_name, points] : points_survey)
         {
             int point_id{0};
-            ;
+
             for (const Point& point : points)
             {
                 const double padf_x[] = {point.x,};

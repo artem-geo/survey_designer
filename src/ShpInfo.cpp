@@ -10,5 +10,7 @@ void ShpInfo::printInfo()
     std::cout << "SHP type: " << shp_type << "\n";
     std::cout << "Padding values: " << "\n";
     for (size_t i{0}; i < 4; ++i)
+    {
         std::cout << "Min " << i << ": " << padf_min_bound[i] << " Max " << ": " << padf_max_bound[i] << "\n";
+    }
 }
