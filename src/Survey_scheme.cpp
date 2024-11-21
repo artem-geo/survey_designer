@@ -1,34 +1,30 @@
 #include "Point.h"
 #include "shapefil.h"
-#include "ShpInfo.h"
-#include "SurveyScheme.h"
+#include "Shp_info.h"
+#include "Survey_scheme.h"
 #include <algorithm>
 #include <cstring>
 #include <iostream>
 
-SurveyScheme::SurveyScheme(const char* file_path)
+Survey_scheme::Survey_scheme(const char* file_path)
     : rectangle(Rectangle()), angle_grad(-1), angle_rad(-1), dL(-1), ds(-1)
 {
     auto handle_in = SHPOpen(file_path, "rb");
-    ShpInfo shp_info;
+    Shp_info shp_info;
     SHPGetInfo(handle_in, &(shp_info.n_entities), &(shp_info.shp_type), shp_info.padf_min_bound, shp_info.padf_max_bound);
 
     // check the opened SHP: type == 5 (Polygon) and only one polygon
     if (shp_info.shp_type != 5)
-    {
         throw std::ios::failure("Please, provide a Polygon SHP file");
-    }
 
     if (shp_info.n_entities != 1)
-    {
         throw std::ios::failure("Please, provide a SHP file with ONE polygon");
-    }
 
     auto polygon = SHPReadObject(handle_in, 0);
-    rectangle.initRectangle(polygon->padfX, polygon->padfY, polygon->nVertices);
-        
-    for (size_t i{0}; i < ((polygon->nVertices) - 1); ++i) // nVertices - 1 as the first and the last vertices are equal
-    {
+    rectangle.init_rectangle(polygon->padfX, polygon->padfY, polygon->nVertices);
+    
+    // nVertices - 1 as the first and the last vertices are equal
+    for (size_t i{0}; i < ((polygon->nVertices) - 1); ++i) { 
         Point point1{polygon->padfX[i], polygon->padfY[i]};
         Point point2{polygon->padfX[i + 1], polygon->padfY[i + 1]};
         // get polygon nodes and edges
@@ -44,31 +40,25 @@ SurveyScheme::SurveyScheme(const char* file_path)
  * @param azimuth_grad survey lines angle relative to the east CCW
  * @param dL line spacing
  */
-void SurveyScheme::initSurveyLines(double azimuth_grad, double line_spacing)
+void Survey_scheme::init_survey_lines(double azimuth_grad, double line_spacing)
 {
     dL = line_spacing;
-    angle_grad = utils::convertAzimuthToAngle(azimuth_grad);
-    angle_rad = utils::convertDegreesToRadians(angle_grad);
-    rectangle.initLines(angle_grad, dL);
+    angle_grad = Utils::convert_azimuth_to_angle(azimuth_grad);
+    angle_rad = Utils::convert_degrees_to_radians(angle_grad);
+    rectangle.init_lines(angle_grad, dL);
 
     int line_id = 1;
-    for (const Line& line_rect : rectangle.lines) 
-    {
+    for (const Line& line_rect : rectangle.lines) {
         std::vector<Point> intersections;
-        for (const Line& line_poly : lines_poly) 
-        {
-            Point intersection = Line::getIntersection(line_poly, line_rect);
-            if (intersection != utils::POINT_DUMMY)
-            {
+        for (const Line& line_poly : lines_poly) {
+            Point intersection = Line::get_intersection(line_poly, line_rect);
+            if (intersection != Utils::POINT_DUMMY)
                 intersections.push_back(intersection);
-            }
         }
-        if ((intersections.size() > 1) && (intersections[0] != intersections[intersections.size() - 1])) 
-        {
+        if ((intersections.size() > 1) && (intersections[0] != intersections[intersections.size() - 1])) {
             std::sort(intersections.begin(), intersections.end());
             int line_sub_id = 0;
-            for (size_t i{0}; i < intersections.size() - 1; i+=2) 
-            {
+            for (size_t i{0}; i < intersections.size() - 1; i+=2) {
                 std::string line_name = std::to_string(line_id) + "." + std::to_string(line_sub_id);
                 lines_survey[line_name] = Line(intersections[i], intersections[i + 1]);
                 line_sub_id++;
@@ -82,12 +72,11 @@ void SurveyScheme::initSurveyLines(double azimuth_grad, double line_spacing)
  * @brief Initialises survey points
  * @param ds Survey points separation
  */
-void SurveyScheme::initSurveyLinearPoints(double station_spacing)
+void Survey_scheme::init_survey_linear_points(double station_spacing)
 {
     ds = station_spacing;
-    for (auto [line_name, line] : lines_survey)
-    {
-        std::vector<Point> stations = planPointsAlongLine(line, ds);
+    for (auto [line_name, line] : lines_survey) {
+        std::vector<Point> stations = plan_points_along_line(line, ds);
         points_survey[line_name] = stations;
     }
 }
@@ -96,10 +85,10 @@ void SurveyScheme::initSurveyLinearPoints(double station_spacing)
  * @brief Initialises hexagonal survey points
  * @param station_spacing double value of survey station spacing
  */
-void SurveyScheme::initSurveyHexPoints(double station_spacing)
+void Survey_scheme::init_survey_hex_points(double station_spacing)
 {
     angle_grad = 60;
-    angle_rad = utils::convertDegreesToRadians(angle_grad);
+    angle_rad = Utils::convert_degrees_to_radians(angle_grad);
     Point point_init = rectangle.corners.bottom_left; // first point of the dataset
     Point point_even = point_init; // first point in an even row
     double dx = station_spacing * std::cos(angle_rad);
@@ -113,8 +102,7 @@ void SurveyScheme::initSurveyHexPoints(double station_spacing)
     std::vector<Point> points_odd;
 
     // init points in even and odd rows
-    do
-    {
+    do {
         points_even.push_back(point_even);
         point_even.x += station_spacing;
 
@@ -124,16 +112,13 @@ void SurveyScheme::initSurveyHexPoints(double station_spacing)
     while (point_odd.x < rectangle.corners.bottom_right.x);
 
     int row_number{0}; // numbering starts at 0
-    do 
-    {
-        if (row_number % 2 == 0)
-        {
+    do {
+        if (row_number % 2 == 0) {
             rectangle.points_hex.insert(rectangle.points_hex.end(), points_even.begin(), points_even.end());
             std::for_each(points_even.begin(), points_even.end(),
                 [&dy] (Point& p) {p.y += (2 * dy); });
         }
-        if (row_number % 2 != 0)
-        {
+        if (row_number % 2 != 0) {
             rectangle.points_hex.insert(rectangle.points_hex.end(), points_odd.begin(), points_odd.end());
             std::for_each(points_odd.begin(), points_odd.end(),
                 [&dy] (Point& p) {p.y += (2 * dy); });
@@ -143,12 +128,9 @@ void SurveyScheme::initSurveyHexPoints(double station_spacing)
     while ((rectangle.points_hex.end() - 1)->y < rectangle.corners.top_left.y);
 
     int point_id{1};
-    for (const Point& point : rectangle.points_hex)
-    {
-        if (checkPointInPolygon(point)) 
-        {
+    for (const Point& point : rectangle.points_hex) {
+        if (check_point_in_polygon(point)) 
             points_hex_survey.push_back({std::to_string(point_id++), point});
-        }
     }
 
 }
@@ -159,43 +141,35 @@ void SurveyScheme::initSurveyHexPoints(double station_spacing)
  * @param ds survey point separation
  * @return vector of points along the line
  */
-std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds)
+std::vector<Point> Survey_scheme::plan_points_along_line(const Line& line, double ds)
 {
     Point point = line.caps.first; // first point coincides with the beginning of the line
     std::vector<Point> points;
-    if (angle_grad == 0) 
-    {
-        do
-        {
+    if (angle_grad == 0) {
+        do {
             points.push_back(point);
             point.x += ds;
         } 
         while (point < line.caps.second);
     }
-    else if (angle_grad == 90)
-    {
-        do
-        {
+    else if (angle_grad == 90) {
+        do {
             points.push_back(point);
             point.y += ds;
         } 
         while (point < line.caps.second);
     }
-    else if (angle_grad < 90 && angle_grad > 0)
-    {
-        do
-        {
+    else if (angle_grad < 90 && angle_grad > 0) {
+        do {
             points.push_back(point);
             point.x += ds * std::cos(angle_rad);
             point.y += ds * std::sin(angle_rad);
         } 
         while (point < line.caps.second);
     }
-    else if (angle_grad > 90 && angle_grad < 180)
-    {
-        double beta_rad = utils::convertDegreesToRadians(180 - angle_grad);
-        do
-        {
+    else if (angle_grad > 90 && angle_grad < 180) {
+        double beta_rad = Utils::convert_degrees_to_radians(180 - angle_grad);
+        do {
             points.push_back(point);
             point.x -= ds * std::cos(beta_rad);
             point.y += ds * std::sin(beta_rad);
@@ -210,17 +184,14 @@ std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds
  * @param point point to check
  * @return true - point within, false - outside
  */
-bool SurveyScheme::checkPointInPolygon(const Point& point)
+bool Survey_scheme::check_point_in_polygon(const Point& point)
 {
     Point ray_cap_right {rectangle.corners.bottom_right.x + 100, point.y};
     Line ray{point, ray_cap_right}; // init ray starting at the point and running to the right 
     int number_intersections{0};
-    for (const Line& line : lines_poly) // loop counting number of intersections
-    {
-        if (Line::checkSegmentsIntersection(ray, line))
-        {
+    for (const Line& line : lines_poly) { // loop counting number of intersections
+        if (Line::check_segments_intersection(ray, line))
             number_intersections++;
-        }
     }
     // even intersections = point outside; odd = inside
     return (number_intersections % 2 == 0) ? false : true;
@@ -230,12 +201,11 @@ bool SurveyScheme::checkPointInPolygon(const Point& point)
  * @brief Saves constructed survey lines into SHP, SHX and DBF files
  * @param file path C-string
  */
-void SurveyScheme::saveLinesToShp(const char* file_path)
+void Survey_scheme::save_lines_to_shp(const char* file_path)
 {
     std::string file_path_string = file_path;
     file_path_string.append(R"(\lines)");
-    if (lines_survey.size() == 0)
-    {
+    if (lines_survey.size() == 0) {
         std::cerr << "No lines constructed. Construct the lines at first" << std::endl;
         throw std::exception();
     }
@@ -248,8 +218,7 @@ void SurveyScheme::saveLinesToShp(const char* file_path)
     int ifield_y2 = DBFAddField(handle_out_dbf, "Y2", FTDouble, 10, 3);
     int ifield_len = DBFAddField(handle_out_dbf, "LEN", FTDouble, 10, 3);
     
-    for (auto [line_name, line] : lines_survey)
-    {
+    for (auto [line_name, line] : lines_survey) {
 
         const double padf_x[] = {line.caps.first.x, line.caps.second.x};
         const double padf_y[] = {line.caps.first.y, line.caps.second.y}; 
@@ -274,23 +243,19 @@ void SurveyScheme::saveLinesToShp(const char* file_path)
  * @brief Saves stations to the SHP file
  * @param file_path C-string file path
  */
-void SurveyScheme::savePointsToShp(const char* file_path, utils::SurveyType survey_type)
+void Survey_scheme::save_points_to_shp(const char* file_path, Utils::Survey_type survey_type)
 {
     std::string file_path_string = file_path;
-    if (survey_type == utils::SurveyType::LINEAR)
-    {
+    if (survey_type == Utils::Survey_type::LINEAR) {
         file_path_string.append(R"(\points)");
-        if (points_survey.size() == 0)
-        {
+        if (points_survey.size() == 0) {
             std::cerr << "No points constructed. Construct the points at first" << std::endl;
             throw std::exception();
         }
     }
-    if (survey_type == utils::SurveyType::HEXAGONAL)
-    {
+    if (survey_type == Utils::Survey_type::HEXAGONAL) {
         file_path_string.append(R"(\points_hex)");
-        if (points_hex_survey.size() == 0)
-        {
+        if (points_hex_survey.size() == 0) {
             std::cerr << "No points constructed. Construct the points at first" << std::endl;
             throw std::exception();
         }
@@ -302,16 +267,13 @@ void SurveyScheme::savePointsToShp(const char* file_path, utils::SurveyType surv
     int ifield_x = DBFAddField(handle_out_dbf, "X", FTDouble, 10, 3);
     int ifield_y = DBFAddField(handle_out_dbf, "Y", FTDouble, 10, 3);
 
-    if (survey_type == utils::SurveyType::LINEAR)
-    {
+    if (survey_type == Utils::Survey_type::LINEAR) {
         int ifield_lid = DBFAddField(handle_out_dbf, "LINEID", FTString, 10, 0);
 
-        for (auto [line_name, points] : points_survey)
-        {
+        for (auto [line_name, points] : points_survey) {
             int point_id{0};
 
-            for (const Point& point : points)
-            {
+            for (const Point& point : points) {
                 const double padf_x[] = {point.x,};
                 const double padf_y[] = {point.y,};
                 const double padf_z[] = {0.0,};
@@ -328,10 +290,8 @@ void SurveyScheme::savePointsToShp(const char* file_path, utils::SurveyType surv
             }
         }
     }
-    if (survey_type == utils::SurveyType::HEXAGONAL)
-    {
-        for (auto [point_id, point] : points_hex_survey)
-        {
+    if (survey_type == Utils::Survey_type::HEXAGONAL) {
+        for (auto [point_id, point] : points_hex_survey) {
             const double padf_x[] = {point.x,};
             const double padf_y[] = {point.y,};
             const double padf_z[] = {0.0,};

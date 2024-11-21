@@ -3,8 +3,7 @@
 #include "Point.h"
 
 
-struct Corners
-{
+struct Corners {
     Point bottom_left;
     Point top_left;
     Point top_right;

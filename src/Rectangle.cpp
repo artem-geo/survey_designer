@@ -11,7 +11,7 @@
  * @param y_array array of doubles containing y coordinates of the polygon nodes
  * @param n_vertices number of vertices of the polygon = actual number + 1 (the first node == the last node)
  */
-void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices)
+void Rectangle::init_rectangle(double x_array[], double y_array[], int n_vertices)
 {
     Point bottom_left{};
     Point top_left{};
@@ -19,10 +19,8 @@ void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices
     Point bottom_right{};
     double x_min{-1}, y_min{-1}, x_max{-1}, y_max{-1};
 
-    for (size_t i{0}; i < (n_vertices-1); ++i) // nVertices = nVertices(actual) + 1
-    { 
-        if (i == 0) // init first pair of coordinates
-        {
+    for (size_t i{0}; i < (n_vertices-1); ++i) { // nVertices = nVertices(actual) + 1
+        if (i == 0) { // init first pair of coordinates
             x_min = x_max = x_array[i];
             y_min = y_max = y_array[i];
             continue;
@@ -47,12 +45,10 @@ void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices
 /**
  * @brief Prints caps of the rectangle' edges
  */
-void Rectangle::printRectangle()
+void Rectangle::print()
 {
     for (size_t i{0}; i < sides.size(); i++) 
-    {
         std::cout << "Line " << i << ": " << sides.at(i) << "\n";
-    }
 }
 
 /**
@@ -60,28 +56,24 @@ void Rectangle::printRectangle()
  * @param angle_grad Orientation angle of the lines in degrees
  * @param dL 
  */
-void Rectangle::initLines(double angle_grad, double dL)
+void Rectangle::init_lines(double angle_grad, double dL)
 {
     Point point_begin, point_end;
-    double angle_rad = utils::convertDegreesToRadians(angle_grad);
-    if (angle_grad == 0) 
-    {
+    double angle_rad = Utils::convert_degrees_to_radians(angle_grad);
+    if (angle_grad == 0) {
         point_begin = corners.bottom_left;
         point_end = corners.bottom_right;
-        do 
-        {
+        do {
             lines.push_back(Line(point_begin, point_end));
             point_begin.y += dL;
             point_end.y += dL;
         } 
         while (point_begin.y <= corners.top_left.y);
     }
-    else if (angle_grad == 90) 
-    {
+    else if (angle_grad == 90) {
         point_begin = corners.bottom_left;
         point_end = corners.top_left;
-        do 
-        {
+        do {
             lines.push_back(Line(point_begin, point_end));
             point_begin.x += dL;
             point_end.x += dL;
@@ -90,8 +82,7 @@ void Rectangle::initLines(double angle_grad, double dL)
     }
     // if angle is in the first or the second quadrants calculations are conducted
     // relative to the central point
-    else if (angle_grad < 90 && angle_grad > 0)
-    {
+    else if (angle_grad < 90 && angle_grad > 0) {
         // central point of a line
         Point point_central = corners.bottom_right;
         
@@ -109,16 +100,14 @@ void Rectangle::initLines(double angle_grad, double dL)
         double y_delta_central = delta_diagonal * std::cos(beta_rad);
 
         // push line and update central point until central point is within the rectangle
-        while ((point_central.x > corners.bottom_left.x) || (point_central.y < corners.top_left.y)) 
-        {
+        while ((point_central.x > corners.bottom_left.x) || (point_central.y < corners.top_left.y)) {
             lines.push_back(Line(Point(point_central.x - x_delta_caps, point_central.y - y_delta_caps), 
                                 Point(point_central.x + x_delta_caps, point_central.y + y_delta_caps)));
             point_central.x -= x_delta_central;
             point_central.y += y_delta_central;
         }            
     }
-    else if (angle_grad > 90 && angle_grad < 180) 
-    {
+    else if (angle_grad > 90 && angle_grad < 180) {
         angle_rad = std::numbers::pi - angle_rad;
 
         // central point of a line
@@ -138,8 +127,7 @@ void Rectangle::initLines(double angle_grad, double dL)
         double y_delta_central = delta_diagonal * std::cos(beta_rad);
 
         // push line and update central point until central point is within the rectangle
-        while ((point_central.x < corners.bottom_right.x) || (point_central.y < corners.top_right.y)) 
-        {
+        while ((point_central.x < corners.bottom_right.x) || (point_central.y < corners.top_right.y)) {
             lines.push_back(Line(Point(point_central.x + x_delta_caps, point_central.y - y_delta_caps), 
                                 Point(point_central.x - x_delta_caps, point_central.y + y_delta_caps)));
             point_central.x += x_delta_central;

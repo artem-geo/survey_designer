@@ -15,23 +15,19 @@ bool operator== (const Point& lhs, const Point& rhs)
 
 bool Point::operator< (const Point& rhs)
 {
-    if (y == rhs.y)
-    {
+    if (y == rhs.y) 
         return x < rhs.x;
-    }
     return y < rhs.y;
 }
 
 bool Point::operator> (const Point& rhs)
 {
     if (y == rhs.y)
-    {
         return x > rhs.x;
-    }
     return y > rhs.y;
 }
 
-std::ostream& operator << (std::ostream& os, const Point& point)
+std::ostream& operator<< (std::ostream& os, const Point& point)
 {
     os << "(" << point.x << ", " << point.y << ")";
     return os;

@@ -16,7 +16,7 @@ std::ostream& operator << (std::ostream& os, const Line& line)
  * @param line2 second instance of the Line class
  * @return pair of doubles where pair.first = t and pair.second = u
  */
-std::pair<double, double> Line::getSegmentIntersectionParameters(const Line& line1, const Line& line2)
+std::pair<double, double> Line::get_segment_intersection_parameters(const Line& line1, const Line& line2)
 {        
     // to simplify the formulae components are rewritten explicitly
     double x1 = line1.caps.first.x;
@@ -42,9 +42,9 @@ std::pair<double, double> Line::getSegmentIntersectionParameters(const Line& lin
  * @param u second intersectino parameter
  * @return boolean value: true if 0 <= t <= 1 and 0 <= u <= 1
  */
-bool Line::checkSegmentsIntersection(const Line& line1, const Line& line2)
+bool Line::check_segments_intersection(const Line& line1, const Line& line2)
 {
-    auto [t, u] = getSegmentIntersectionParameters(line1, line2);
+    auto [t, u] = get_segment_intersection_parameters(line1, line2);
     bool check_intersect = ((0 <= t) && (t <= 1)) && ((0 <= u) && (u <= 1));
     return check_intersect;
 }
@@ -55,14 +55,13 @@ bool Line::checkSegmentsIntersection(const Line& line1, const Line& line2)
  * @param line2 second instance of the Line class
  * @return Point class instance - line intersection; {-999, -999} - if points do not intersect
  */
-Point Line::getIntersection(const Line& line1, const Line& line2)
+Point Line::get_intersection(const Line& line1, const Line& line2)
 {
-    auto [t, u] = getSegmentIntersectionParameters(line1, line2);
-    if (checkSegmentsIntersection(line1, line2)) 
-    {
+    auto [t, u] = get_segment_intersection_parameters(line1, line2);
+    if (check_segments_intersection(line1, line2)) {
         double x_intersection = line1.caps.first.x + t * (line1.caps.second.x - line1.caps.first.x);
         double y_intersection = line1.caps.first.y + t * (line1.caps.second.y - line1.caps.first.y);
         return Point(x_intersection, y_intersection);            
     }
-    return utils::POINT_DUMMY; // return dummy point if no intersection is detected
+    return Utils::POINT_DUMMY; // return dummy point if no intersection is detected
 }

@@ -41,13 +41,13 @@
     <ClCompile Include="src\Rectangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ShpInfo.cpp">
+    <ClCompile Include="src\Shp_info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SurveyScheme.cpp">
+    <ClCompile Include="src\Survey_scheme.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -64,13 +64,13 @@
     <ClInclude Include="include\Rectangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ShpInfo.h">
+    <ClInclude Include="include\Shp_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SurveyScheme.h">
+    <ClInclude Include="include\Survey_scheme.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
