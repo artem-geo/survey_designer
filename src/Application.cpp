@@ -50,8 +50,8 @@ Example:
 */
 
 
-#include "Survey_scheme.h"
-#include "Utils.h"
+#include "survey_scheme.h"
+#include "utils.h"
 #include <iostream>
 
 int main(int argc, char* argv[])

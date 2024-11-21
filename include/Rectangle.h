@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Corners.h"
-#include "Line.h"
+#include "corners.h"
+#include "line.h"
 #include <vector>
 
 class Rectangle {   

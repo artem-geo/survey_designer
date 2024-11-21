@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Point.h"
+#include "point.h"
 
 namespace Utils {
     const Point POINT_DUMMY = Point(-999, -999);

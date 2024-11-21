@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Rectangle.h"
-#include "Utils.h"
+#include "rectangle.h"
+#include "utils.h"
 #include <map>
 #include <vector>
 #include <string>

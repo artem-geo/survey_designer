@@ -1,4 +1,4 @@
-#include "Shp_info.h"
+#include "shp_info.h"
 #include <iostream>
 
 /**

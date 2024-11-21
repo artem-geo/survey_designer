@@ -1,7 +1,7 @@
-#include "Point.h"
+#include "point.h"
 #include "shapefil.h"
-#include "Shp_info.h"
-#include "Survey_scheme.h"
+#include "shp_info.h"
+#include "survey_scheme.h"
 #include <algorithm>
 #include <cstring>
 #include <iostream>
