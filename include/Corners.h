@@ -1,6 +1,6 @@
 #pragma once
 
-#include "point.h"
+#include "Point.h"
 
 
 struct Corners {

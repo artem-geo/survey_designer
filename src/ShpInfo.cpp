@@ -1,11 +1,10 @@
-#include "shp_info.h"
+#include "ShpInfo.h"
 #include <iostream>
 
 /**
  * @brief Prints attributes of the ShpInfo object (info from the SHP-file header)
  */
-void Shp_info::printInfo()
-{
+void ShpInfo::printInfo() {
     std::cout << "Number of entities: " << n_entities << "\n";
     std::cout << "SHP type: " << shp_type << "\n";
     std::cout << "Padding values: " << "\n";

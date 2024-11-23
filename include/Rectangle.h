@@ -1,7 +1,7 @@
 #pragma once
 
-#include "corners.h"
-#include "line.h"
+#include "Corners.h"
+#include "Line.h"
 #include <vector>
 
 class Rectangle {   
@@ -11,7 +11,7 @@ public:
     std::vector<Line> lines;
     std::vector<Point> points_hex;
     
-    void init_rectangle(double x_array[], double y_array[], int n_vertices);
+    void initRectangle(double x_array[], double y_array[], int n_vertices);
     void print();
-    void init_lines(double angle_grad, double dL);
+    void initLines(double angle_grad, double dL);
 };

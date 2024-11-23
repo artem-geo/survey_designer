@@ -29,48 +29,48 @@
     <None Include="examples\polygon2.shx" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\application.cpp">
+    <ClCompile Include="src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\line.cpp">
+    <ClCompile Include="src\Line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\point.cpp">
+    <ClCompile Include="src\Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rectangle.cpp">
+    <ClCompile Include="src\Rectangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shp_info.cpp">
+    <ClCompile Include="src\ShpInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils.cpp">
+    <ClCompile Include="src\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\survey_scheme.cpp">
+    <ClCompile Include="src\SurveyScheme.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\corners.h">
+    <ClInclude Include="include\Corners.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\line.h">
+    <ClInclude Include="include\Line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\point.h">
+    <ClInclude Include="include\Point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\rectangle.h">
+    <ClInclude Include="include\Rectangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\shp_info.h">
+    <ClInclude Include="include\ShpInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils.h">
+    <ClInclude Include="include\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\survey_scheme.h">
+    <ClInclude Include="include\SurveyScheme.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

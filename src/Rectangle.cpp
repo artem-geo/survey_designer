@@ -1,6 +1,6 @@
-#include "point.h"
-#include "rectangle.h"
-#include "utils.h"
+#include "Point.h"
+#include "Rectangle.h"
+#include "Utils.h"
 #include <cmath>
 #include <iostream>
 #include <numbers>
@@ -11,8 +11,7 @@
  * @param y_array array of doubles containing y coordinates of the polygon nodes
  * @param n_vertices number of vertices of the polygon = actual number + 1 (the first node == the last node)
  */
-void Rectangle::init_rectangle(double x_array[], double y_array[], int n_vertices)
-{
+void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices) {
     Point bottom_left{};
     Point top_left{};
     Point top_right{};
@@ -45,8 +44,7 @@ void Rectangle::init_rectangle(double x_array[], double y_array[], int n_vertice
 /**
  * @brief Prints caps of the rectangle' edges
  */
-void Rectangle::print()
-{
+void Rectangle::print() {
     for (size_t i{0}; i < sides.size(); i++) 
         std::cout << "Line " << i << ": " << sides.at(i) << "\n";
 }
@@ -56,10 +54,9 @@ void Rectangle::print()
  * @param angle_grad Orientation angle of the lines in degrees
  * @param dL 
  */
-void Rectangle::init_lines(double angle_grad, double dL)
-{
+void Rectangle::initLines(double angle_grad, double dL) {
     Point point_begin, point_end;
-    double angle_rad = Utils::convert_degrees_to_radians(angle_grad);
+    double angle_rad = Utils::convertDegreesToRadians(angle_grad);
     if (angle_grad == 0) {
         point_begin = corners.bottom_left;
         point_end = corners.bottom_right;
@@ -67,8 +64,7 @@ void Rectangle::init_lines(double angle_grad, double dL)
             lines.push_back(Line(point_begin, point_end));
             point_begin.y += dL;
             point_end.y += dL;
-        } 
-        while (point_begin.y <= corners.top_left.y);
+        } while (point_begin.y <= corners.top_left.y);
     }
     else if (angle_grad == 90) {
         point_begin = corners.bottom_left;
@@ -77,8 +73,7 @@ void Rectangle::init_lines(double angle_grad, double dL)
             lines.push_back(Line(point_begin, point_end));
             point_begin.x += dL;
             point_end.x += dL;
-        } 
-        while (point_begin.x <= corners.bottom_right.x);
+        } while (point_begin.x <= corners.bottom_right.x);
     }
     // if angle is in the first or the second quadrants calculations are conducted
     // relative to the central point
