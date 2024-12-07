@@ -11,7 +11,8 @@
  * @param y_array array of doubles containing y coordinates of the polygon nodes
  * @param n_vertices number of vertices of the polygon = actual number + 1 (the first node == the last node)
  */
-void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices) {
+void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices) 
+{
     Point bottom_left{};
     Point top_left{};
     Point top_right{};
@@ -44,7 +45,8 @@ void Rectangle::initRectangle(double x_array[], double y_array[], int n_vertices
 /**
  * @brief Prints caps of the rectangle' edges
  */
-void Rectangle::print() {
+void Rectangle::print() 
+{
     for (size_t i{0}; i < sides.size(); i++) 
         std::cout << "Line " << i << ": " << sides.at(i) << "\n";
 }
@@ -54,7 +56,8 @@ void Rectangle::print() {
  * @param angle_grad Orientation angle of the lines in degrees
  * @param dL 
  */
-void Rectangle::initLines(double angle_grad, double dL) {
+void Rectangle::initLines(double angle_grad, double dL) 
+{
     Point point_begin, point_end;
     double angle_rad = Utils::convertDegreesToRadians(angle_grad);
     if (angle_grad == 0) {

@@ -7,7 +7,8 @@
 #include <iostream>
 
 SurveyScheme::SurveyScheme(const char* file_path)
-    : rectangle(Rectangle()), angle_grad(-1), angle_rad(-1), dL(-1), ds(-1) {
+    : rectangle(Rectangle()), angle_grad(-1), angle_rad(-1), dL(-1), ds(-1) 
+{
     auto handle_in = SHPOpen(file_path, "rb");
     ShpInfo shp_info;
     SHPGetInfo(handle_in, &(shp_info.n_entities), &(shp_info.shp_type), shp_info.padf_min_bound, shp_info.padf_max_bound);
@@ -39,7 +40,8 @@ SurveyScheme::SurveyScheme(const char* file_path)
  * @param azimuth_grad survey lines angle relative to the east CCW
  * @param dL line spacing
  */
-void SurveyScheme::initSurveyLines(double azimuth_grad, double line_spacing) {
+void SurveyScheme::initSurveyLines(double azimuth_grad, double line_spacing) 
+{
     dL = line_spacing;
     angle_grad = Utils::convertAzimuthToAngle(azimuth_grad);
     angle_rad = Utils::convertDegreesToRadians(angle_grad);
@@ -70,7 +72,8 @@ void SurveyScheme::initSurveyLines(double azimuth_grad, double line_spacing) {
  * @brief Initialises survey points
  * @param ds Survey points separation
  */
-void SurveyScheme::initSurveyLinearPoints(double station_spacing) {
+void SurveyScheme::initSurveyLinearPoints(double station_spacing) 
+{
     ds = station_spacing;
     for (auto [line_name, line] : lines_survey) {
         std::vector<Point> stations = planPointsAlongLine(line, ds);
@@ -82,7 +85,8 @@ void SurveyScheme::initSurveyLinearPoints(double station_spacing) {
  * @brief Initialises hexagonal survey points
  * @param station_spacing double value of survey station spacing
  */
-void SurveyScheme::initSurveyHexPoints(double station_spacing) {
+void SurveyScheme::initSurveyHexPoints(double station_spacing) 
+{
     angle_grad = 60;
     angle_rad = Utils::convertDegreesToRadians(angle_grad);
     Point point_init = rectangle.corners.bottom_left; // first point of the dataset
@@ -134,7 +138,8 @@ void SurveyScheme::initSurveyHexPoints(double station_spacing) {
  * @param ds survey point separation
  * @return vector of points along the line
  */
-std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds) {
+std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds) 
+{
     Point point = line.caps.first; // first point coincides with the beginning of the line
     std::vector<Point> points;
     if (angle_grad == 0) {
@@ -172,7 +177,8 @@ std::vector<Point> SurveyScheme::planPointsAlongLine(const Line& line, double ds
  * @param point point to check
  * @return true - point within, false - outside
  */
-bool SurveyScheme::checkPointInPolygon(const Point& point) {
+bool SurveyScheme::checkPointInPolygon(const Point& point) 
+{
     Point ray_cap_right {rectangle.corners.bottom_right.x + 100, point.y};
     Line ray{point, ray_cap_right}; // init ray starting at the point and running to the right 
     int number_intersections{0};
@@ -188,7 +194,8 @@ bool SurveyScheme::checkPointInPolygon(const Point& point) {
  * @brief Saves constructed survey lines into SHP, SHX and DBF files
  * @param file path C-string
  */
-void SurveyScheme::saveLinesToShp(const char* file_path) {
+void SurveyScheme::saveLinesToShp(const char* file_path) 
+{
     std::string file_path_string = file_path;
     file_path_string.append(R"(\lines)");
     if (lines_survey.size() == 0) {
@@ -229,7 +236,8 @@ void SurveyScheme::saveLinesToShp(const char* file_path) {
  * @brief Saves stations to the SHP file
  * @param file_path C-string file path
  */
-void SurveyScheme::savePointsToShp(const char* file_path, Utils::SurveyType survey_type) {
+void SurveyScheme::savePointsToShp(const char* file_path, Utils::SurveyType survey_type) 
+{
     std::string file_path_string = file_path;
     if (survey_type == Utils::SurveyType::LINEAR) {
         file_path_string.append(R"(\points)");

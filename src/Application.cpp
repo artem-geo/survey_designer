@@ -54,7 +54,8 @@ Example:
 #include "Utils.h"
 #include <iostream>
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
     //int argc = 8;
     ////int argc = 5;
     //char name[] = "survey_designer.exe";
