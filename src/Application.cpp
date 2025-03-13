@@ -30,7 +30,7 @@ If Parameter 1 == -c:
         -fp = polygon file path excluding file extenstion, ie. polygon, not polygon.shp
 
     Parameter 7.
-        -fs = output file path excluding file extenstion, ie. scheme, not scheme.shp
+        -fs = output file path
 
 If Parameter 1 == -h:
     
@@ -50,27 +50,14 @@ Example:
 */
 
 
-#include "SurveyScheme.h"
-#include "Utils.h"
+#include "survey_scheme.h"
+#include "utils.h"
 #include <iostream>
 
 int main(int argc, char* argv[]) 
-{
-    //int argc = 8;
-    ////int argc = 5;
-    //char name[] = "survey_designer.exe";
-    //char p1[] = "-c";
-    //char p2[] = "-b";
-    //char p3[] = "-dl=300";
-    //char p4[] = "-a=315";
-    //char p5[] = "-ds=100";
-    //char p6[] = R"(../examples/input/polygon)";
-    //char p7[] = R"(../examples/output/)";
-    //char* argv[] = {name, p1, p2, p3, p4, p5, p6, p7};
-    ////char* argv[] = {name, p1, p5, p6, p7};
-    
+{   
     try {
-        Utils::Survey_params survey_params = Utils::parseInputParams(argc, argv);
+        Utils::SurveyParams survey_params = Utils::parseInputParams(argc, argv);
         SurveyScheme survey_scheme{survey_params.path_polygon.c_str()};
 
         switch (survey_params.type) {

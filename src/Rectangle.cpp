@@ -1,6 +1,6 @@
-#include "Point.h"
-#include "Rectangle.h"
-#include "Utils.h"
+#include "point.h"
+#include "rectangle.h"
+#include "utils.h"
 #include <cmath>
 #include <iostream>
 #include <numbers>

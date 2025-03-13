@@ -1,5 +1,5 @@
-#include "Line.h"
-#include "Utils.h"
+#include "line.h"
+#include "utils.h"
 
 Line::Line(Point p1, Point p2)
         : caps(p1, p2) 

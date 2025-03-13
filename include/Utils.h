@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Point.h"
+#include "point.h"
 
 namespace Utils {
     const Point POINT_DUMMY = Point(-999, -999);
     enum class SurveyType { LINEAR=0, HEXAGONAL=1 };
     enum class ObjectToSave {LINE=0, POINT=1, ALL=2};
-    struct Survey_params {
+    struct SurveyParams {
         SurveyType type;
         ObjectToSave object_to_save;
         double line_spacing;
@@ -17,7 +17,7 @@ namespace Utils {
     };
     double convertAzimuthToAngle(double azimuth);
     double convertDegreesToRadians(double angle);
-    Survey_params parseInputParams(int argc, char* argv[]);
+    SurveyParams parseInputParams(int argc, char* argv[]);
     SurveyType parseTypeParam(std::string& survey_type_param);
     ObjectToSave parseObjectToSaveParam(std::string& object_to_save_param);
     double parseLineSpacingParam(std::string& line_spacing_param);
