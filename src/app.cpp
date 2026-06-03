@@ -1,14 +1,12 @@
 /*
-Survey planner v 1.0
+Survey designer v 1.0
 Input parameters
 
-Parameter 0. Survey planner file
+Parameter 0. Survey designer file
 
 Parameter 1. Survey type
     -c = conventional survey
     -h = hexagonal survey
-
-
 
 If Parameter 1 == -c:
 
@@ -45,7 +43,7 @@ If Parameter 1 == -h:
 
 
 Example:
-    surveyplanner.exe -c -b -dl=50 -a=45 -ds=10 C:\Users\User\Desktop\tempfile C:\Users\User\Desktop\output
+    survey-designer.exe -c -b -dl=50 -a=45 -ds=10 .\tempfile .\output
 
 */
 
