@@ -1,6 +1,6 @@
 #pragma once
 
-#include "point.h"
+#include "survey_designer/point.hpp"
 
 
 struct Corners {

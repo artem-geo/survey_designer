@@ -7,5 +7,5 @@ public:
     double padf_min_bound[4];
     double padf_max_bound[4];
     ShpInfo() = default;
-    void printInfo();
+    void print_info();
 };
